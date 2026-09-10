@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
+    <!-- Importando a biblioteca de Gráficos (Chart.js) -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
             --bg-color: #121212;
@@ -45,61 +47,42 @@
             outline: none;
             border-color: var(--primary-color);
         }
-        .checkbox-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-        }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .checkbox-group input { width: auto; }
-        .parcelas-container {
-            display: none;
-            gap: 10px;
-            margin-top: 10px;
-        }
+        .parcelas-container { display: none; gap: 10px; margin-top: 10px; }
         .parcelas-container.visible { display: flex; }
         button {
-            width: 100%;
-            padding: 12px;
-            background-color: var(--primary-color);
-            color: #000;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
+            width: 100%; padding: 12px; background-color: var(--primary-color);
+            color: #000; border: none; border-radius: 6px; font-weight: bold;
+            cursor: pointer; margin-top: 10px;
         }
         button:hover { background-color: #a370f0; }
         
-        /* CSS do Dashboard */
         .dashboard {
-            background-color: #2c2c2c;
-            padding: 16px;
-            border-radius: 8px;
-            margin-bottom: 24px;
-            border: 1px solid #444;
+            background-color: #2c2c2c; padding: 16px; border-radius: 8px;
+            margin-bottom: 24px; border: 1px solid #444;
         }
         .progress-text {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 12px;
-            font-size: 0.95em;
-            font-weight: 600;
+            display: flex; justify-content: space-between; margin-bottom: 12px;
+            font-size: 0.95em; font-weight: 600;
         }
         .progress-bg {
-            background-color: #121212;
-            border-radius: 8px;
-            height: 14px;
-            width: 100%;
-            overflow: hidden;
-            border: 1px solid #444;
+            background-color: #121212; border-radius: 8px; height: 14px;
+            width: 100%; overflow: hidden; border: 1px solid #444;
         }
         .progress-fill {
-            height: 100%;
-            width: 0%;
-            background-color: #03dac6;
+            height: 100%; width: 0%; background-color: #03dac6;
             transition: width 0.4s ease, background-color 0.4s ease;
-        }       
+        }
+        
+        /* Estilos da Análise e Gráfico */
+        .chart-container { margin-top: 20px; margin-bottom: 20px; }
+        .ai-feedback {
+            background-color: #121212; border-left: 4px solid var(--primary-color);
+            padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.9em;
+            line-height: 1.5; font-style: italic; color: #ccc;
+        }
+        .ai-feedback span.destaque { color: var(--primary-color); font-weight: bold; font-style: normal; }
     </style>
 </head>
 <body>
@@ -114,7 +97,7 @@
     </form>
 </div>
 
-<!-- TELA PRINCIPAL (Finanças) -->
+<!-- TELA PRINCIPAL -->
 <div class="container" id="appContainer">
     
     <!-- PAINEL DE PROGRESSO -->
@@ -125,6 +108,14 @@
         </div>
         <div class="progress-bg">
             <div class="progress-fill" id="barraProgresso"></div>
+        </div>
+        
+        <!-- NOVA SEÇÃO: Gráfico e IA -->
+        <div class="chart-container">
+            <canvas id="meuGrafico"></canvas>
+        </div>
+        <div class="ai-feedback" id="aiFeedback">
+            Carregando análise inteligente...
         </div>
     </div>
 
@@ -145,10 +136,10 @@
             <label>Categoria</label>
             <select id="categoria" required>
                 <option value="mercado">Mercado</option>
-                <option value="transporte">Transporte</option>
-                <option value="alimentacao">Alimentação fora</option>
-                <option value="saude">Saúde/Beleza</option>
-                <option value="lazer">Lazer/Assinaturas</option>
+                <option value="transporte">Transporte (Uber, Ônibus)</option>
+                <option value="alimentacao">Alimentação (Restaurante/Ifood)</option>
+                <option value="saude">Saúde/Beleza (Skincare, etc)</option>
+                <option value="lazer">Lazer (Assinaturas, Saídas)</option>
                 <option value="outros">Outros</option>
             </select>
         </div>
@@ -176,16 +167,14 @@
 </div>
 
 <script type="module">
-    // 1. Importações (Organizadas e sem repetição)
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
-    // 2. Configuração do Firebase
     const firebaseConfig = {
         apiKey: "AIzaSyBRO8iETqoCnvNk-uS3kop1qWYUkHvylS0",
         authDomain: "financas-e5595.firebaseapp.com",
-        databaseURL: "https://financas-e5595-default-rtdb.firebaseio.com", // Importante para o Realtime Database
+        databaseURL: "https://financas-e5595-default-rtdb.firebaseio.com",
         projectId: "financas-e5595",
         storageBucket: "financas-e5595.firebasestorage.app",
         messagingSenderId: "360293437041",
@@ -196,7 +185,6 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-    // 3. Variáveis Globais do DOM
     const loginContainer = document.getElementById('loginContainer');
     const appContainer = document.getElementById('appContainer');
     const financeForm = document.getElementById('financeForm');
@@ -204,11 +192,89 @@
     const parcelasDiv = document.getElementById('parcelasDiv');
     const submitBtn = financeForm.querySelector('button[type="submit"]');
     
-    appContainer.style.display = 'none'; // Esconde por padrão
+    appContainer.style.display = 'none';
 
     const LIMITE_FATURA = 800.00;
+    
+    // Variável para guardar a instância do gráfico e evitar que ele se duplique
+    let graficoInstancia = null;
 
-    // 4. Função do Dashboard (Barra de progresso)
+    // Função que desenha o gráfico e gera o texto da "IA"
+    function gerarAnaliseInteligente(dadosCategorias, totalGasto) {
+        const labels = Object.keys(dadosCategorias);
+        const valores = Object.values(dadosCategorias);
+        
+        // 1. Atualizar Gráfico Chart.js
+        const ctx = document.getElementById('meuGrafico').getContext('2d');
+        if (graficoInstancia) {
+            graficoInstancia.destroy(); // Apaga o gráfico antigo antes de desenhar o novo
+        }
+        
+        graficoInstancia = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)), // Deixa primeira letra maiúscula
+                datasets: [{
+                    data: valores,
+                    backgroundColor: ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e'],
+                    borderWidth: 0,
+                    hoverOffset: 4
+                }]
+            },
+            options: {
+                plugins: {
+                    legend: { labels: { color: '#e0e0e0' } }
+                }
+            }
+        });
+
+        // 2. Lógica do Educador Financeiro (A nossa "IA")
+        const aiBox = document.getElementById('aiFeedback');
+        
+        if (totalGasto === 0) {
+            aiBox.innerHTML = "Sua fatura está zerada. Excelente momento para planejar o mês!";
+            return;
+        }
+
+        // Descobrindo onde você gastou mais
+        let maiorCategoria = labels[0];
+        let maiorValor = valores[0];
+        
+        for (let i = 1; i < labels.length; i++) {
+            if (valores[i] > maiorValor) {
+                maiorValor = valores[i];
+                maiorCategoria = labels[i];
+            }
+        }
+
+        const porcentagemMaior = ((maiorValor / totalGasto) * 100).toFixed(0);
+        const porcentagemTotal = ((totalGasto / LIMITE_FATURA) * 100).toFixed(0);
+
+        // Construindo a mensagem educacional com base nos dados
+        let dica = `Sua fatura está em <span class="destaque">${porcentagemTotal}%</span> do limite de R$ 800. `;
+
+        if (totalGasto > LIMITE_FATURA) {
+            dica += "<br><br>⚠️ <b>Alerta Vermelho:</b> Você ultrapassou seu limite de crédito! Tente congelar compras não essenciais até a virada do cartão.";
+        } else if (totalGasto > LIMITE_FATURA * 0.8) {
+            dica += "<br><br>⚠️ Você já usou mais de 80% do limite. Segure o freio nas comprinhas!";
+        }
+
+        dica += `<br><br>🔎 Seu maior ralo de dinheiro está sendo com <span class="destaque">${maiorCategoria.toUpperCase()}</span> (R$ ${maiorValor.toFixed(2)}), que representa ${porcentagemMaior}% do que você já gastou. `;
+
+        // Dicas específicas por categoria
+        if (maiorCategoria === 'lazer' && porcentagemMaior > 30) {
+            dica += "Você está gastando muito com assinaturas ou saídas! Lazer é bom, mas será que não dá pra cortar algo que você quase não usa?";
+        } else if (maiorCategoria === 'saude' && porcentagemMaior > 30) {
+            dica += "Gastos com skincare e saúde são importantes, mas avalie se não dá para fracionar as compras desses produtos nos próximos meses.";
+        } else if (maiorCategoria === 'alimentacao') {
+            dica += "Comer fora puxa muito o limite. Que tal planejar as marmitas da semana no final de semana para economizar?";
+        } else if (maiorCategoria === 'transporte' && porcentagemMaior > 20) {
+            dica += "Muitas corridas de aplicativo? Veja se consegue se organizar para depender menos do Uber no dia a dia.";
+        }
+
+        aiBox.innerHTML = dica;
+    }
+
     function carregarDashboard() {
         const agora = new Date();
         const mesReferencia = agora.toISOString().slice(0, 7); 
@@ -219,10 +285,23 @@
         onValue(faturaRef, (snapshot) => {
             let totalGasto = 0;
             const dados = snapshot.val();
+            
+            // Variável para agrupar as categorias para o gráfico
+            const dadosCategorias = {
+                mercado: 0, transporte: 0, alimentacao: 0, saude: 0, lazer: 0, outros: 0
+            };
 
             if (dados) {
                 for (const key in dados) {
-                    totalGasto += dados[key].valor;
+                    const gasto = dados[key];
+                    totalGasto += gasto.valor;
+                    
+                    // Soma na categoria correta
+                    if (dadosCategorias[gasto.categoria] !== undefined) {
+                        dadosCategorias[gasto.categoria] += gasto.valor;
+                    } else {
+                        dadosCategorias['outros'] += gasto.valor;
+                    }
                 }
             }
 
@@ -234,17 +313,15 @@
             const barra = document.getElementById('barraProgresso');
             barra.style.width = `${porcentagem}%`;
 
-            if (porcentagem < 50) {
-                barra.style.backgroundColor = '#03dac6';
-            } else if (porcentagem < 85) {
-                barra.style.backgroundColor = '#ffeb3b';
-            } else {
-                barra.style.backgroundColor = '#cf6679';
-            }
+            if (porcentagem < 50) { barra.style.backgroundColor = '#03dac6'; } 
+            else if (porcentagem < 85) { barra.style.backgroundColor = '#ffeb3b'; } 
+            else { barra.style.backgroundColor = '#cf6679'; }
+            
+            // Chama a função que desenha o gráfico e escreve a dica, passando os dados processados!
+            gerarAnaliseInteligente(dadosCategorias, totalGasto);
         });
     }
 
-    // 5. Controle de Login (Unificado)
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginContainer.style.display = 'none';
@@ -260,26 +337,17 @@
         e.preventDefault();
         const email = document.getElementById('email').value;
         const senha = document.getElementById('senha').value;
-
-        try {
-            await signInWithEmailAndPassword(auth, email, senha);
-        } catch (error) {
-            alert("Erro ao fazer login: " + error.message);
-        }
+        try { await signInWithEmailAndPassword(auth, email, senha); } 
+        catch (error) { alert("Erro ao fazer login: " + error.message); }
     });
 
-    // 6. Formulário de Gastos
     checkboxParcelado.addEventListener('change', (e) => {
-        if (e.target.checked) {
-            parcelasDiv.classList.add('visible');
-        } else {
-            parcelasDiv.classList.remove('visible');
-        }
+        if (e.target.checked) { parcelasDiv.classList.add('visible'); } 
+        else { parcelasDiv.classList.remove('visible'); }
     });
 
     financeForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-
         submitBtn.disabled = true;
         submitBtn.innerText = "Salvando...";
 
@@ -307,7 +375,7 @@
             parcelasDiv.classList.remove('visible');
         } catch (erro) {
             console.error("Erro ao salvar:", erro);
-            alert("Erro ao salvar. Você está logada e com regras liberadas no Firebase?");
+            alert("Erro ao salvar. Verifique se você está logada.");
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerText = "Registrar Gasto";
