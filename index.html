@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Importando fontes mais dinâmicas e arredondadas do Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
+    
     <style>
         /* Tema Padrão (Drácula) */
         :root {
@@ -52,7 +58,9 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            /* Aplicando a nova fonte em todo o projeto */
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 400;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -67,7 +75,7 @@
             padding: 24px;
             border-radius: 12px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px; /* Aumentei um pouquinho o limite máximo pro PC */
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             margin-bottom: 20px;
             transition: background-color 0.3s;
@@ -86,6 +94,8 @@
             border: 1px solid var(--border-color);
             padding: 6px 14px;
             border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 500;
             font-size: 0.85em;
             cursor: pointer;
             transition: all 0.2s;
@@ -95,9 +105,16 @@
             color: var(--primary-color);
         }
 
-        h2 { margin-top: 0; color: var(--primary-color); }
+        h2 { 
+            margin-top: 0; 
+            color: var(--primary-color); 
+            font-weight: 600; /* Títulos mais gordinhos para dar destaque */
+            letter-spacing: 0.5px;
+        }
+        h3 { font-weight: 600; }
+        
         .form-group { margin-bottom: 16px; }
-        label { display: block; margin-bottom: 6px; font-size: 0.9em; }
+        label { display: block; margin-bottom: 6px; font-size: 0.95em; font-weight: 500;}
         
         input, select {
             width: 100%;
@@ -105,8 +122,9 @@
             background-color: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            border-radius: 6px;
+            border-radius: 8px; /* Bordas mais arredondadas combinando com a fonte */
             box-sizing: border-box;
+            font-family: 'Fredoka', sans-serif;
             transition: border-color 0.2s;
         }
         input:focus, select:focus {
@@ -119,9 +137,10 @@
         }
         
         .btn-quick {
-            white-space: nowrap; padding: 6px 12px; font-size: 0.8em;
+            white-space: nowrap; padding: 6px 12px; font-size: 0.85em; font-weight: 500;
             background-color: transparent; color: var(--primary-color);
             border: 1px solid var(--primary-color); border-radius: 20px;
+            font-family: 'Fredoka', sans-serif;
             cursor: pointer; width: auto; margin: 0; transition: all 0.2s;
         }
         .btn-quick:hover { background-color: var(--primary-color); color: var(--bg-color); }
@@ -132,20 +151,21 @@
         .parcelas-container.visible { display: flex; }
         
         button[type="submit"] {
-            width: 100%; padding: 12px; background-color: var(--primary-color);
-            color: var(--bg-color); border: none; border-radius: 6px; font-weight: bold;
+            width: 100%; padding: 14px; background-color: var(--primary-color);
+            color: var(--bg-color); border: none; border-radius: 8px; 
+            font-weight: 600; font-size: 1em; font-family: 'Fredoka', sans-serif;
             cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
         }
         button[type="submit"]:hover { opacity: 0.8; }
         
         .dashboard {
-            background-color: var(--surface-color); padding: 16px; border-radius: 8px;
+            background-color: var(--surface-color); padding: 16px; border-radius: 12px;
             margin-bottom: 24px; border: 1px solid var(--border-color);
         }
         
         .progress-text {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; font-size: 0.95em; font-weight: 600;
+            margin-bottom: 12px; font-size: 1em; font-weight: 500;
         }
 
         .bloco-fatura { display: flex; align-items: center; gap: 8px; }
@@ -153,14 +173,14 @@
         .input-mes {
             background-color: var(--bg-color); color: var(--primary-color); 
             border: 1px solid var(--primary-color); border-radius: 20px; 
-            padding: 2px 8px; font-family: inherit; font-size: 0.85em; 
-            font-weight: bold; width: auto; max-width: 135px; cursor: pointer; outline: none;
+            padding: 4px 10px; font-family: 'Fredoka', sans-serif; font-size: 0.9em; 
+            font-weight: 600; width: auto; max-width: 150px; cursor: pointer; outline: none;
         }
         
-        .valor-total { white-space: nowrap; font-size: 0.9em; }
+        .valor-total { white-space: nowrap; font-size: 0.95em; font-weight: 600; }
 
         .progress-bg {
-            background-color: var(--bg-color); border-radius: 8px; height: 14px;
+            background-color: var(--bg-color); border-radius: 8px; height: 16px;
             width: 100%; overflow: hidden; border: 1px solid var(--border-color);
         }
         .progress-fill {
@@ -172,13 +192,13 @@
         
         .ai-feedback {
             background-color: var(--bg-color); border-left: 4px solid var(--primary-color);
-            padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.9em;
-            line-height: 1.5; font-style: italic; color: var(--text-color); margin-bottom: 24px;
+            padding: 14px 16px; border-radius: 0 12px 12px 0; font-size: 0.95em;
+            line-height: 1.5; color: var(--text-color); margin-bottom: 24px;
         }
-        .ai-feedback span.destaque { color: var(--primary-color); font-weight: bold; font-style: normal; }
+        .ai-feedback span.destaque { color: var(--primary-color); font-weight: 600; }
 
         .historico-container {
-            background-color: var(--surface-color); padding: 16px; border-radius: 8px;
+            background-color: var(--surface-color); padding: 16px; border-radius: 12px;
             border: 1px solid var(--border-color); overflow-x: auto;
         }
         .historico-header {
@@ -186,13 +206,42 @@
         }
         .historico-header h3 { margin: 0; font-size: 1.1em; color: var(--primary-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        th, td { text-align: left; padding: 10px 4px; border-bottom: 1px solid var(--border-color); }
-        th { font-weight: normal; opacity: 0.7; }
+        th, td { text-align: left; padding: 12px 4px; border-bottom: 1px solid var(--border-color); }
+        th { font-weight: 500; opacity: 0.7; }
         
-        .tag-parcela { font-size: 0.75em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold;}
+        .tag-parcela { font-size: 0.8em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 6px; margin-left: 6px; font-weight: 600;}
         .btn-delete {
             background-color: transparent !important; color: #cf6679 !important; width: auto !important;
             padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer;
+        }
+
+        /* ---------------------------------------------------
+           MEDIA QUERIES - RESPONSIVIDADE PARA CELULAR 
+        --------------------------------------------------- */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px; /* Reduz a margem inútil nas bordas no celular */
+            }
+            .container {
+                padding: 16px;
+            }
+            .progress-text {
+                /* Se a tela for pequena, quebra a linha do mês e do valor */
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px; 
+            }
+            .bloco-fatura {
+                width: 100%;
+                justify-content: space-between; /* Empurra o input pro canto direito */
+            }
+            .valor-total {
+                align-self: flex-start;
+                font-size: 1.2em; /* Deixa o dinheiro maior para ler melhor de pé */
+            }
+            .input-mes {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -344,9 +393,11 @@
     
     let graficoInstancia = null;
     let listenerAtual = null;
-    let dadosAtuaisCSV = null; // Variável global para guardar os dados atuais para exportação
+    let dadosAtuaisCSV = null; 
 
-    // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
+    // Chart font customization to match new UI font
+    Chart.defaults.font.family = "'Fredoka', sans-serif";
+
     const getChartColors = () => {
         const theme = document.documentElement.className;
         if (theme === 'theme-gruvbox') return ['#fabd2f', '#b8bb26', '#fb4934', '#fe8019', '#83a598', '#d3869b'];
@@ -356,7 +407,6 @@
         return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
     };
 
-    // --- LÓGICA DE TEMAS ---
     const temasClasses = ['', 'theme-gruvbox', 'theme-retro', 'theme-fresh-greens', 'theme-ice-cream'];
     const temasNomes = ['🎨 Drácula', '🎨 Gruvbox', '🎨 Terminal', '🎨 Fresh', '🎨 Sorvete'];
     let temaAtualIndex = 0;
@@ -373,7 +423,6 @@
         }
     });
 
-    // --- LÓGICA DE QUICK ADD ---
     document.querySelectorAll('.btn-quick').forEach(btn => {
         btn.addEventListener('click', (e) => {
             document.getElementById('local').value = e.target.getAttribute('data-local');
@@ -407,7 +456,7 @@
                     borderWidth: 0, hoverOffset: 4
                 }]
             },
-            options: { plugins: { legend: { labels: { color: '#e0e0e0' } } } }
+            options: { plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim(), font: {family: "'Fredoka', sans-serif"} } } } }
         });
 
         const aiBox = document.getElementById('aiFeedback');
@@ -466,7 +515,7 @@
         onValue(listenerAtual, (snapshot) => {
             let totalGasto = 0;
             const dados = snapshot.val();
-            dadosAtuaisCSV = dados; // Salva os dados para o export
+            dadosAtuaisCSV = dados; 
             const dadosCategorias = { mercado: 0, transporte: 0, alimentacao: 0, saude: 0, lazer: 0, outros: 0 };
             
             corpoTabela.innerHTML = '';
@@ -521,19 +570,16 @@
         });
     }
 
-    // --- LÓGICA DE EXPORTAR CSV ---
     document.getElementById('btnExportar').addEventListener('click', () => {
         if (!dadosAtuaisCSV) {
             alert("Não há dados registrados neste mês para exportar.");
             return;
         }
 
-        // Converte os dados do Firebase para um array e ordena
         const listaGastos = Object.keys(dadosAtuaisCSV).map(key => {
             return { id: key, ...dadosAtuaisCSV[key] };
-        }).sort((a, b) => new Date(a.data) - new Date(b.data)); // Ordena do mais antigo pro mais novo no CSV
+        }).sort((a, b) => new Date(a.data) - new Date(b.data)); 
 
-        // Define o cabeçalho do arquivo
         let csvContent = "Data,Local,Categoria,Valor,Parcela\n";
 
         listaGastos.forEach(g => {
@@ -544,14 +590,11 @@
             const dataFormatada = `${dia}/${mes}/${ano}`;
 
             const parcela = g.parcelado ? `${g.parcelaAtual}/${g.parcelaTotal}` : "Nao";
-            
-            // Colocamos o local entre aspas duplas caso você tenha usado vírgulas no texto, para não quebrar a planilha
             const localTratado = `"${g.local.replace(/"/g, '""')}"`;
 
             csvContent += `${dataFormatada},${localTratado},${g.categoria},${g.valor.toFixed(2)},${parcela}\n`;
         });
 
-        // Cria o arquivo virtual e dispara o download
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
         const url = URL.createObjectURL(blob);
