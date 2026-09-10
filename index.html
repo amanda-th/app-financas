@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finanças - Cartão</title>
+    <style>
+        :root {
+            --bg-color: #121212;
+            --surface-color: #1e1e1e;
+            --primary-color: #bb86fc;
+            --text-color: #e0e0e0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: var(--surface-color);
+            padding: 24px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 400px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        h2 { margin-top: 0; color: var(--primary-color); }
+        .form-group { margin-bottom: 16px; }
+        label { display: block; margin-bottom: 6px; font-size: 0.9em; }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            background-color: #2c2c2c;
+            border: 1px solid #444;
+            color: white;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .checkbox-group input { width: auto; }
+        .parcelas-container {
+            display: none;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .parcelas-container.visible { display: flex; }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: var(--primary-color);
+            color: #000;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #a370f0; }
+        
+        /* CSS do Dashboard */
+        .dashboard {
+            background-color: #2c2c2c;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            border: 1px solid #444;
+        }
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+        .progress-bg {
+            background-color: #121212;
+            border-radius: 8px;
+            height: 14px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid #444;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background-color: #03dac6;
+            transition: width 0.4s ease, background-color 0.4s ease;
+        }       
+    </style>
+</head>
+<body>
+
+<!-- TELA DE LOGIN -->
+<div class="container" id="loginContainer">
+    <h2>Login</h2>
+    <form id="loginForm">
+        <input type="email" id="email" placeholder="Seu e-mail" required style="margin-bottom: 10px;">
+        <input type="password" id="senha" placeholder="Sua senha" required style="margin-bottom: 10px;">
+        <button type="submit">Entrar</button>
+    </form>
+</div>
+
+<!-- TELA PRINCIPAL (Finanças) -->
+<div class="container" id="appContainer">
+    
+    <!-- PAINEL DE PROGRESSO -->
+    <div class="dashboard">
+        <div class="progress-text">
+            <span>Fatura de <span id="mesNome">Este mês</span></span>
+            <span id="valorTotal">R$ 0,00 / R$ 800,00</span>
+        </div>
+        <div class="progress-bg">
+            <div class="progress-fill" id="barraProgresso"></div>
+        </div>
+    </div>
+
+    <!-- FORMULÁRIO DE GASTO -->
+    <h2>Novo Gasto (Crédito)</h2>
+    <form id="financeForm">
+        <div class="form-group">
+            <label>Valor (R$)</label>
+            <input type="number" id="valor" step="0.01" placeholder="Ex: 45.90" required>
+        </div>
+
+        <div class="form-group">
+            <label>Local / Descrição</label>
+            <input type="text" id="local" placeholder="Ex: Mercado" required>
+        </div>
+
+        <div class="form-group">
+            <label>Categoria</label>
+            <select id="categoria" required>
+                <option value="mercado">Mercado</option>
+                <option value="transporte">Transporte</option>
+                <option value="alimentacao">Alimentação fora</option>
+                <option value="saude">Saúde/Beleza</option>
+                <option value="lazer">Lazer/Assinaturas</option>
+                <option value="outros">Outros</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="checkbox-group">
+                <input type="checkbox" id="isParcelado">
+                Compra parcelada?
+            </label>
+            
+            <div class="parcelas-container" id="parcelasDiv">
+                <div style="flex: 1;">
+                    <label>Parcela atual</label>
+                    <input type="number" id="parcelaAtual" min="1" value="1">
+                </div>
+                <div style="flex: 1;">
+                    <label>De quantas?</label>
+                    <input type="number" id="parcelaTotal" min="2" value="2">
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">Registrar Gasto</button>
+    </form>
+</div>
+
+<script type="module">
+    // 1. Importações (Organizadas e sem repetição)
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getDatabase, ref, push, set, onValue } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+    // 2. Configuração do Firebase
+    const firebaseConfig = {
+        apiKey: "AIzaSyBRO8iETqoCnvNk-uS3kop1qWYUkHvylS0",
+        authDomain: "financas-e5595.firebaseapp.com",
+        databaseURL: "https://financas-e5595-default-rtdb.firebaseio.com", // Importante para o Realtime Database
+        projectId: "financas-e5595",
+        storageBucket: "financas-e5595.firebasestorage.app",
+        messagingSenderId: "360293437041",
+        appId: "1:360293437041:web:bcb0fee0f05ce4e68d15d0"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+    const auth = getAuth(app);
+
+    // 3. Variáveis Globais do DOM
+    const loginContainer = document.getElementById('loginContainer');
+    const appContainer = document.getElementById('appContainer');
+    const financeForm = document.getElementById('financeForm');
+    const checkboxParcelado = document.getElementById('isParcelado');
+    const parcelasDiv = document.getElementById('parcelasDiv');
+    const submitBtn = financeForm.querySelector('button[type="submit"]');
+    
+    appContainer.style.display = 'none'; // Esconde por padrão
+
+    const LIMITE_FATURA = 800.00;
+
+    // 4. Função do Dashboard (Barra de progresso)
+    function carregarDashboard() {
+        const agora = new Date();
+        const mesReferencia = agora.toISOString().slice(0, 7); 
+        
+        document.getElementById('mesNome').innerText = mesReferencia;
+        const faturaRef = ref(db, `financas/faturas/${mesReferencia}`);
+
+        onValue(faturaRef, (snapshot) => {
+            let totalGasto = 0;
+            const dados = snapshot.val();
+
+            if (dados) {
+                for (const key in dados) {
+                    totalGasto += dados[key].valor;
+                }
+            }
+
+            let porcentagem = (totalGasto / LIMITE_FATURA) * 100;
+            if (porcentagem > 100) porcentagem = 100;
+
+            document.getElementById('valorTotal').innerText = `R$ ${totalGasto.toFixed(2)} / R$ ${LIMITE_FATURA.toFixed(2)}`;
+            
+            const barra = document.getElementById('barraProgresso');
+            barra.style.width = `${porcentagem}%`;
+
+            if (porcentagem < 50) {
+                barra.style.backgroundColor = '#03dac6';
+            } else if (porcentagem < 85) {
+                barra.style.backgroundColor = '#ffeb3b';
+            } else {
+                barra.style.backgroundColor = '#cf6679';
+            }
+        });
+    }
+
+    // 5. Controle de Login (Unificado)
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            loginContainer.style.display = 'none';
+            appContainer.style.display = 'block';
+            carregarDashboard();
+        } else {
+            loginContainer.style.display = 'block';
+            appContainer.style.display = 'none';
+        }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const senha = document.getElementById('senha').value;
+
+        try {
+            await signInWithEmailAndPassword(auth, email, senha);
+        } catch (error) {
+            alert("Erro ao fazer login: " + error.message);
+        }
+    });
+
+    // 6. Formulário de Gastos
+    checkboxParcelado.addEventListener('change', (e) => {
+        if (e.target.checked) {
+            parcelasDiv.classList.add('visible');
+        } else {
+            parcelasDiv.classList.remove('visible');
+        }
+    });
+
+    financeForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "Salvando...";
+
+        const agora = new Date();
+        const mesReferencia = agora.toISOString().slice(0, 7);
+        const isParcelado = checkboxParcelado.checked;
+        
+        const novoGasto = {
+            valor: parseFloat(document.getElementById('valor').value),
+            local: document.getElementById('local').value.trim(),
+            categoria: document.getElementById('categoria').value,
+            data: agora.toISOString(),
+            parcelado: isParcelado,
+            parcelaAtual: isParcelado ? parseInt(document.getElementById('parcelaAtual').value, 10) : 1,
+            parcelaTotal: isParcelado ? parseInt(document.getElementById('parcelaTotal').value, 10) : 1
+        };
+
+        try {
+            const faturaRef = ref(db, `financas/faturas/${mesReferencia}`);
+            const novoItemRef = push(faturaRef);
+            await set(novoItemRef, novoGasto);
+
+            alert("Gasto salvo com sucesso!");
+            financeForm.reset();
+            parcelasDiv.classList.remove('visible');
+        } catch (erro) {
+            console.error("Erro ao salvar:", erro);
+            alert("Erro ao salvar. Você está logada e com regras liberadas no Firebase?");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "Registrar Gasto";
+        }
+    });
+</script>
+
+</body>
+</html>
