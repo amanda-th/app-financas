@@ -4,17 +4,53 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#121212">
-    <link rel="apple-touch-icon" href="icon-192.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
+        /* Tema Padrão (Drácula) */
         :root {
             --bg-color: #121212;
             --surface-color: #1e1e1e;
             --primary-color: #bb86fc;
             --text-color: #e0e0e0;
+            --border-color: #444;
         }
+
+        /* Tema Gruvbox */
+        :root.theme-gruvbox {
+            --bg-color: #282828;
+            --surface-color: #3c3836;
+            --primary-color: #fabd2f;
+            --text-color: #ebdbb2;
+            --border-color: #504945;
+        }
+
+        /* Tema Retro Terminal */
+        :root.theme-retro {
+            --bg-color: #000000;
+            --surface-color: #0a0a0a;
+            --primary-color: #00ff00;
+            --text-color: #cccccc;
+            --border-color: #003300;
+        }
+
+        /* Tema Fresh Greens (Ajustado) */
+        :root.theme-fresh-greens {
+            --bg-color: #2d4a22; 
+            --surface-color: #386641; 
+            --primary-color: #a7c957; 
+            --text-color: #f2e8cf; 
+            --border-color: #6a994e;
+        }      
+
+        /* Tema Ice Cream (Mapeado para as variáveis corretas) */
+        :root.theme-ice-cream {
+            --bg-color: #feeac7; /* papaya-whip */
+            --surface-color: #fdf5e6; /* Cor leve para os blocos */
+            --primary-color: #d88180; /* light-coral */
+            --text-color: #724319; /* walnut */
+            --border-color: #f7b1b0; /* powder-blush */
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
@@ -23,7 +59,9 @@
             padding: 20px;
             display: flex;
             justify-content: center;
+            transition: background-color 0.3s, color 0.3s;
         }
+        
         .container {
             background-color: var(--surface-color);
             padding: 24px;
@@ -32,85 +70,145 @@
             max-width: 400px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
             margin-bottom: 20px;
+            transition: background-color 0.3s;
         }
+        
+        .header-tools {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .btn-theme {
+            background: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .btn-theme:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+
         h2 { margin-top: 0; color: var(--primary-color); }
         .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 6px; font-size: 0.9em; }
+        
         input, select {
             width: 100%;
             padding: 10px;
-            background-color: #2c2c2c;
-            border: 1px solid #444;
-            color: white;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
             border-radius: 6px;
             box-sizing: border-box;
+            transition: border-color 0.2s;
         }
         input:focus, select:focus {
             outline: none;
             border-color: var(--primary-color);
         }
+        
+        .quick-add-container {
+            display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 5px;
+        }
+        
+        .btn-quick {
+            white-space: nowrap; padding: 6px 12px; font-size: 0.8em;
+            background-color: transparent; color: var(--primary-color);
+            border: 1px solid var(--primary-color); border-radius: 20px;
+            cursor: pointer; width: auto; margin: 0; transition: all 0.2s;
+        }
+        .btn-quick:hover { background-color: var(--primary-color); color: var(--bg-color); }
+
         .checkbox-group { display: flex; align-items: center; gap: 10px; cursor: pointer; }
         .checkbox-group input { width: auto; }
         .parcelas-container { display: none; gap: 10px; margin-top: 10px; }
         .parcelas-container.visible { display: flex; }
         
-        /* Botões padrão do form */
-        button {
+        button[type="submit"] {
             width: 100%; padding: 12px; background-color: var(--primary-color);
-            color: #000; border: none; border-radius: 6px; font-weight: bold;
-            cursor: pointer; margin-top: 10px;
+            color: var(--bg-color); border: none; border-radius: 6px; font-weight: bold;
+            cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
         }
-        button:hover { background-color: #a370f0; }
+        button[type="submit"]:hover { opacity: 0.8; }
         
-        /* Estilos do Dashboard e Gráfico */
         .dashboard {
-            background-color: #2c2c2c; padding: 16px; border-radius: 8px;
-            margin-bottom: 24px; border: 1px solid #444;
+            background-color: var(--surface-color); padding: 16px; border-radius: 8px;
+            margin-bottom: 24px; border: 1px solid var(--border-color);
         }
+        
         .progress-text {
-            display: flex; justify-content: space-between; margin-bottom: 12px;
-            font-size: 0.95em; font-weight: 600;
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            margin-bottom: 12px; 
+            font-size: 0.95em; 
+            font-weight: 600;
         }
+
+        .bloco-fatura {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* Dá um respiro entre a palavra "Fatura" e a caixa do mês */
+        }
+        
+        .input-mes {
+            background-color: var(--bg-color); 
+            color: var(--primary-color); 
+            border: 1px solid var(--primary-color);
+            border-radius: 20px; 
+            padding: 2px 8px; /* Reduzido levemente para poupar espaço */
+            font-family: inherit; 
+            font-size: 0.85em; /* Fonte um pouco menor */
+            font-weight: bold;
+            width: auto;
+            max-width: 135px; /* Evita que ocupe muito espaço da tela */
+            cursor: pointer;
+            outline: none;
+        }
+        
+        .valor-total {
+            white-space: nowrap; /* Impede a quebra de linha do R$ 800 */
+            font-size: 0.9em;
+        }
+
         .progress-bg {
-            background-color: #121212; border-radius: 8px; height: 14px;
-            width: 100%; overflow: hidden; border: 1px solid #444;
+            background-color: var(--bg-color); border-radius: 8px; height: 14px;
+            width: 100%; overflow: hidden; border: 1px solid var(--border-color);
         }
         .progress-fill {
-            height: 100%; width: 0%; background-color: #03dac6;
+            height: 100%; width: 0%; background-color: var(--primary-color);
             transition: width 0.4s ease, background-color 0.4s ease;
         }
+        
         .chart-container { margin-top: 24px; margin-bottom: 20px; }
+        
         .ai-feedback {
-            background-color: #121212; border-left: 4px solid var(--primary-color);
+            background-color: var(--bg-color); border-left: 4px solid var(--primary-color);
             padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.9em;
-            line-height: 1.5; font-style: italic; color: #ccc; margin-bottom: 24px;
+            line-height: 1.5; font-style: italic; color: var(--text-color); margin-bottom: 24px;
         }
         .ai-feedback span.destaque { color: var(--primary-color); font-weight: bold; font-style: normal; }
 
-        /* Estilos do Histórico */
         .historico-container {
-            background-color: #2c2c2c; padding: 16px; border-radius: 8px;
-            border: 1px solid #444; overflow-x: auto;
+            background-color: var(--surface-color); padding: 16px; border-radius: 8px;
+            border: 1px solid var(--border-color); overflow-x: auto;
         }
         .historico-container h3 { margin-top: 0; font-size: 1.1em; color: var(--primary-color); margin-bottom: 12px; }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        th, td { text-align: left; padding: 10px 4px; border-bottom: 1px solid #444; }
-        th { color: #aaa; font-weight: normal; }
-        td { color: #e0e0e0; }
-        .tag-parcela { font-size: 0.75em; background-color: var(--primary-color); color: #000; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold;}
+        th, td { text-align: left; padding: 10px 4px; border-bottom: 1px solid var(--border-color); }
+        th { font-weight: normal; opacity: 0.7; }
         
-        /* Botão de Excluir Gasto (Sobrescrevendo o padrão do form) */
+        .tag-parcela { font-size: 0.75em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold;}
         .btn-delete {
-            background-color: transparent !important;
-            color: #cf6679 !important;
-            width: auto !important;
-            padding: 5px !important;
-            margin: 0 !important;
-            font-size: 1.2em;
-        }
-        .btn-delete:hover {
-            background-color: rgba(207, 102, 121, 0.1) !important;
-            transform: scale(1.1);
+            background-color: transparent !important; color: #cf6679 !important; width: auto !important;
+            padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer;
         }
     </style>
 </head>
@@ -125,10 +223,22 @@
     </form>
 </div>
 
-<div class="container" id="appContainer"> 
+<div class="container" id="appContainer">
+    
+    <!-- SELETOR DE TEMAS -->
+    <div class="header-tools">
+        <h2 style="margin: 0;">Finanças</h2>
+        <button id="btnTheme" class="btn-theme">🎨 Drácula</button>
+    </div>
+    
+    <h3 style="font-size: 1.1em; color: var(--primary-color); margin-bottom: 8px; margin-top: 0;">Registrar Gasto</h3>
+    
+    <div class="quick-add-container">
+        <button type="button" class="btn-quick" data-local="Stok Center" data-cat="mercado">Stok Center</button>
+        <button type="button" class="btn-quick" data-local="Paulinho" data-cat="mercado">Paulinho</button>
+        <button type="button" class="btn-quick" data-local="São João, Panvel, etc" data-cat="saude">Farmácia</button>
+    </div>
 
-    <!-- 2. REGISTRO DE GASTO -->
-    <h2>Novo Gasto (Crédito)</h2>
     <form id="financeForm" style="margin-bottom: 24px;">
         <div class="form-group">
             <label>Valor (R$)</label>
@@ -170,33 +280,34 @@
             </div>
         </div>
 
-        <button type="submit">Registrar Gasto</button>
+        <button type="submit">Registrar</button>
     </form>
 
-    <hr style="border: 1px solid #333; margin-bottom: 24px;">
+    <hr style="border: 1px solid var(--border-color); margin-bottom: 24px;">
 
-    <!-- 1. BARRA DE PROGRESSO -->
+    <!-- BARRA DE PROGRESSO & FILTRO -->
     <div class="dashboard">
         <div class="progress-text">
-            <span>Fatura: <span id="mesNome">Este mês</span></span>
-            <span id="valorTotal">R$ 0,00 / R$ 800,00</span>
+            <div class="bloco-fatura">
+                <span>Fatura:</span>
+                <input type="month" id="filtroMes" class="input-mes">
+            </div>
+            <span id="valorTotal" class="valor-total">R$ 0,00 / R$ 800,00</span>
         </div>
         <div class="progress-bg">
             <div class="progress-fill" id="barraProgresso"></div>
         </div>
     </div>
-
-    <!-- 3. GRÁFICO -->
+    
+    <!-- GRÁFICO E ANÁLISE -->
     <div class="chart-container">
         <canvas id="meuGrafico"></canvas>
     </div>
-
-    <!-- 4. ANÁLISE IA -->
     <div class="ai-feedback" id="aiFeedback">
-        Carregando análise inteligente...
+        Carregando análise...
     </div>
 
-    <!-- 5. HISTÓRICO DE COMPRAS -->
+    <!-- HISTÓRICO -->
     <div class="historico-container">
         <h3>Histórico deste ciclo</h3>
         <table>
@@ -217,9 +328,8 @@
 </div>
 
 <script type="module">
-    // Importamos a função "remove" do firebase-database para poder excluir gastos
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getDatabase, ref, push, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+    import { getDatabase, ref, push, set, onValue, remove, off } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
 
     const firebaseConfig = {
@@ -236,17 +346,64 @@
     const db = getDatabase(app);
     const auth = getAuth(app);
 
-    const loginContainer = document.getElementById('loginContainer');
     const appContainer = document.getElementById('appContainer');
+    const loginContainer = document.getElementById('loginContainer');
     const financeForm = document.getElementById('financeForm');
-    const checkboxParcelado = document.getElementById('isParcelado');
-    const parcelasDiv = document.getElementById('parcelasDiv');
-    const submitBtn = financeForm.querySelector('button[type="submit"]');
     const corpoTabela = document.getElementById('corpoTabela');
+    const filtroMes = document.getElementById('filtroMes');
     
     appContainer.style.display = 'none';
     const LIMITE_FATURA = 800.00;
+    
     let graficoInstancia = null;
+    let listenerAtual = null;
+
+    // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
+    const getChartColors = () => {
+        const theme = document.documentElement.className;
+        
+        // Mantido: Tons terrosos e quentes bem distintos
+        if (theme === 'theme-gruvbox') return ['#fabd2f', '#b8bb26', '#fb4934', '#fe8019', '#83a598', '#d3869b'];
+        
+        // Novo Retro: Cores neon vibrantes (Verde, Ciano, Rosa, Amarelo, Roxo, Azul) que brilham no fundo preto
+        if (theme === 'theme-retro') return ['#39ff14', '#04d9ff', '#ff71ce', '#ffea00', '#bc13fe', '#1370fe'];
+        
+        // Novo Fresh Greens: Tons da natureza com alto contraste (Laranja terra, Turquesa, Amarelo sol, Telha, Verde escuro, Verde claro)
+        if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
+        
+        // Novo Ice Cream: "Sabores" bem definidos (Morango, Mirtilo, Manga, Menta, Chocolate, Cereja) para destacar no fundo claro
+        if (theme === 'theme-ice-cream') return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180'];
+        
+        // Padrão Drácula
+        return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
+    };
+
+    // --- LÓGICA DE TEMAS ---
+    const temasClasses = ['', 'theme-gruvbox', 'theme-retro', 'theme-fresh-greens', 'theme-ice-cream'];
+    const temasNomes = ['🎨 Drácula', '🎨 Gruvbox', '🎨 Terminal', '🎨 Fresh', '🎨 Sorvete'];
+    let temaAtualIndex = 0;
+    const btnTheme = document.getElementById('btnTheme');
+
+    btnTheme.addEventListener('click', () => {
+        temaAtualIndex = (temaAtualIndex + 1) % temasClasses.length;
+        document.documentElement.className = temasClasses[temaAtualIndex];
+        btnTheme.innerText = temasNomes[temaAtualIndex];
+        
+        // Atualiza as cores do gráfico em tempo real se ele já existir
+        if (graficoInstancia) {
+            graficoInstancia.data.datasets[0].backgroundColor = getChartColors();
+            graficoInstancia.update();
+        }
+    });
+
+    // --- LÓGICA DE QUICK ADD ---
+    document.querySelectorAll('.btn-quick').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            document.getElementById('local').value = e.target.getAttribute('data-local');
+            document.getElementById('categoria').value = e.target.getAttribute('data-cat');
+            document.getElementById('valor').focus(); 
+        });
+    });
 
     function obterMesFaturaAtual() {
         const data = new Date();
@@ -256,7 +413,7 @@
         return data.toISOString().slice(0, 7); 
     }
 
-    function gerarAnaliseInteligente(dadosCategorias, totalGasto) {
+    function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado) {
         const labels = Object.keys(dadosCategorias);
         const valores = Object.values(dadosCategorias);
         
@@ -269,7 +426,7 @@
                 labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
                 datasets: [{
                     data: valores,
-                    backgroundColor: ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e'],
+                    backgroundColor: getChartColors(), // Cores agora vêm da função
                     borderWidth: 0, hoverOffset: 4
                 }]
             },
@@ -279,7 +436,7 @@
         const aiBox = document.getElementById('aiFeedback');
         
         if (totalGasto === 0) {
-            aiBox.innerHTML = "Fatura recém virada! O limite está zerado. Ótimo momento para planejar o mês.";
+            aiBox.innerHTML = "Fatura sem lançamentos. Ótimo momento para planejar os próximos passos.";
             return;
         }
 
@@ -293,42 +450,43 @@
         }
 
         const porcentagemTotal = ((totalGasto / LIMITE_FATURA) * 100).toFixed(0);
-        let dica = `Sua fatura consumiu <span class="destaque">${porcentagemTotal}%</span> do limite (R$ 800). `;
+        let dica = `Consumo: <span class="destaque">${porcentagemTotal}%</span> do limite de R$ 800. `;
 
-        const agora = new Date();
-        let dataFechamento = new Date(agora.getFullYear(), agora.getMonth(), 9);
-        if (agora.getDate() > 9) {
-            dataFechamento.setMonth(dataFechamento.getMonth() + 1);
-        }
+        const mesAtualReal = obterMesFaturaAtual();
         
-        const diasRestantes = Math.ceil((dataFechamento - agora) / (1000 * 60 * 60 * 24));
-        const saldoDisponivel = LIMITE_FATURA - totalGasto;
+        if (mesDesejado === mesAtualReal) {
+            const agora = new Date();
+            let dataFechamento = new Date(agora.getFullYear(), agora.getMonth(), 9);
+            if (agora.getDate() > 9) { dataFechamento.setMonth(dataFechamento.getMonth() + 1); }
+            
+            const diasRestantes = Math.ceil((dataFechamento - agora) / (1000 * 60 * 60 * 24));
+            const saldoDisponivel = LIMITE_FATURA - totalGasto;
 
-        if (saldoDisponivel > 0 && diasRestantes > 0) {
-            const mediaDiaria = saldoDisponivel / diasRestantes;
-            dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para o cartão virar. Para não lotar a fatura, tente gastar no máximo <b>R$ ${mediaDiaria.toFixed(2)}</b> por dia até lá.`;
-        } else if (saldoDisponivel <= 0) {
-            dica += `<br><br>⏳ <b>Alerta:</b> O limite esgotou! Congele o cartão pelos próximos ${diasRestantes} dias até que ele vire (dia 9).`;
-        } else if (diasRestantes === 0) {
-            dica += `<br><br>⏳ <b>Fechamento:</b> O cartão vira hoje! Segure compras para amanhã, assim elas caem no próximo mês.`;
+            if (saldoDisponivel > 0 && diasRestantes > 0) {
+                const mediaDiaria = saldoDisponivel / diasRestantes;
+                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para o cartão virar. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
+            } else if (saldoDisponivel <= 0) {
+                dica += `<br><br>⏳ <b>Alerta:</b> O limite esgotou! Congele o cartão até o dia 9.`;
+            }
+        } else {
+            dica += "<br><br>🕒 <i>Exibindo histórico de um ciclo passado.</i>";
         }
 
         if (maiorCategoria === 'mercado') {
-            dica += `<br><br>🛒 O maior gasto é com <span class="destaque">MERCADO</span> (R$ ${maiorValor.toFixed(2)}). Como é prioridade básica, está tudo certo liderar o gráfico. Só fique de olho para não comprometer todo o ritmo diário.`;
+            dica += `<br><br>🛒 O maior gasto foi com <span class="destaque">MERCADO</span> (R$ ${maiorValor.toFixed(2)}).`;
         } else {
-            dica += `<br><br>🔎 O maior ralo financeiro agora é <span class="destaque">${maiorCategoria.toUpperCase()}</span> (R$ ${maiorValor.toFixed(2)}). Avalie se não dá pra segurar um pouco nisso.`;
+            dica += `<br><br>🔎 O maior ralo financeiro deste ciclo foi <span class="destaque">${maiorCategoria.toUpperCase()}</span> (R$ ${maiorValor.toFixed(2)}).`;
         }
 
         aiBox.innerHTML = dica;
     }
 
-    function carregarDashboard() {
-        const mesReferencia = obterMesFaturaAtual();
-        document.getElementById('mesNome').innerText = mesReferencia;
+    function carregarDashboard(mesDesejado) {
+        if (listenerAtual) { off(listenerAtual); }
         
-        const faturaRef = ref(db, `financas/faturas/${mesReferencia}`);
+        listenerAtual = ref(db, `financas/faturas/${mesDesejado}`);
 
-        onValue(faturaRef, (snapshot) => {
+        onValue(listenerAtual, (snapshot) => {
             let totalGasto = 0;
             const dados = snapshot.val();
             const dadosCategorias = { mercado: 0, transporte: 0, alimentacao: 0, saude: 0, lazer: 0, outros: 0 };
@@ -336,14 +494,12 @@
             corpoTabela.innerHTML = '';
 
             if (dados) {
-                // Recupera as chaves do Firebase junto com os dados para poder deletar depois
                 const listaGastos = Object.keys(dados).map(key => {
                     return { id: key, ...dados[key] };
-                }).sort((a, b) => new Date(b.data) - new Date(a.data)); // Ordena do mais novo pro mais velho
+                }).sort((a, b) => new Date(b.data) - new Date(a.data));
 
                 for (const gasto of listaGastos) {
                     totalGasto += gasto.valor;
-                    
                     if (dadosCategorias[gasto.categoria] !== undefined) {
                         dadosCategorias[gasto.categoria] += gasto.valor;
                     } else {
@@ -353,73 +509,57 @@
                     const dataObj = new Date(gasto.data);
                     const dia = String(dataObj.getDate()).padStart(2, '0');
                     const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-                    const dataFormatada = `${dia}/${mes}`;
-
-                    let textoParcela = '';
-                    if (gasto.parcelado) {
-                        textoParcela = `<span class="tag-parcela">${gasto.parcelaAtual}/${gasto.parcelaTotal}</span>`;
-                    }
+                    let textoParcela = gasto.parcelado ? `<span class="tag-parcela">${gasto.parcelaAtual}/${gasto.parcelaTotal}</span>` : '';
 
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
-                        <td>${dataFormatada}</td>
-                        <td>${gasto.local} ${textoParcela}<br><small style="color: #888;">${gasto.categoria.toUpperCase()}</small></td>
+                        <td>${dia}/${mes}</td>
+                        <td>${gasto.local} ${textoParcela}<br><small style="opacity: 0.6;">${gasto.categoria.toUpperCase()}</small></td>
                         <td style="text-align: right; font-weight: bold;">R$ ${gasto.valor.toFixed(2)}</td>
                         <td style="text-align: center;">
-                            <button class="btn-delete" data-id="${gasto.id}" title="Excluir Gasto">🗑️</button>
+                            <button class="btn-delete" data-id="${gasto.id}" data-mes="${mesDesejado}">🗑️</button>
                         </td>
                     `;
                     corpoTabela.appendChild(tr);
                 }
             } else {
-                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #888; padding: 20px;">Nenhum gasto neste ciclo ainda.</td></tr>';
+                corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; opacity: 0.6;">Nenhum gasto neste ciclo.</td></tr>';
             }
 
             let porcentagem = (totalGasto / LIMITE_FATURA) * 100;
             if (porcentagem > 100) porcentagem = 100;
 
             document.getElementById('valorTotal').innerText = `R$ ${totalGasto.toFixed(2)} / R$ ${LIMITE_FATURA.toFixed(2)}`;
-            
             const barra = document.getElementById('barraProgresso');
             barra.style.width = `${porcentagem}%`;
 
-            if (porcentagem < 50) { barra.style.backgroundColor = '#03dac6'; } 
-            else if (porcentagem < 85) { barra.style.backgroundColor = '#ffeb3b'; } 
-            else { barra.style.backgroundColor = '#cf6679'; }
+            // A cor da barra também acompanha a cor primária do tema agora
+            if (porcentagem >= 100) {
+                barra.style.backgroundColor = '#cf6679'; // Só fica vermelho se estourar
+            } else {
+                barra.style.backgroundColor = 'var(--primary-color)';
+            }
             
-            gerarAnaliseInteligente(dadosCategorias, totalGasto);
+            gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado);
         });
     }
-
-    // LÓGICA DE EXCLUIR GASTO
-    corpoTabela.addEventListener('click', async (e) => {
-        const btnDelete = e.target.closest('.btn-delete');
-        if (btnDelete) {
-            const idGasto = btnDelete.getAttribute('data-id');
-            const confirmar = confirm("Tem certeza que deseja apagar este gasto?");
-            
-            if (confirmar) {
-                try {
-                    const mesReferencia = obterMesFaturaAtual();
-                    const itemRef = ref(db, `financas/faturas/${mesReferencia}/${idGasto}`);
-                    await remove(itemRef);
-                    // O app atualiza automaticamente sem precisar recarregar a página!
-                } catch (error) {
-                    alert("Erro ao excluir: " + error.message);
-                }
-            }
-        }
-    });
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
             loginContainer.style.display = 'none';
             appContainer.style.display = 'block';
-            carregarDashboard();
+            
+            const mesInicial = obterMesFaturaAtual();
+            filtroMes.value = mesInicial;
+            carregarDashboard(mesInicial);
         } else {
             loginContainer.style.display = 'block';
             appContainer.style.display = 'none';
         }
+    });
+
+    filtroMes.addEventListener('change', (e) => {
+        carregarDashboard(e.target.value);
     });
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
@@ -430,18 +570,17 @@
         catch (error) { alert("Erro ao fazer login: " + error.message); }
     });
 
-    checkboxParcelado.addEventListener('change', (e) => {
-        if (e.target.checked) { parcelasDiv.classList.add('visible'); } 
-        else { parcelasDiv.classList.remove('visible'); }
+    document.getElementById('isParcelado').addEventListener('change', (e) => {
+        document.getElementById('parcelasDiv').classList.toggle('visible', e.target.checked);
     });
 
     financeForm.addEventListener('submit', async (e) => {
         e.preventDefault();
-        submitBtn.disabled = true;
-        submitBtn.innerText = "Salvando...";
+        const btnSubmit = financeForm.querySelector('button[type="submit"]');
+        btnSubmit.disabled = true;
+        btnSubmit.innerText = "Salvando...";
 
-        const isParcelado = checkboxParcelado.checked;
-        
+        const isParcelado = document.getElementById('isParcelado').checked;
         const novoGasto = {
             valor: parseFloat(document.getElementById('valor').value),
             local: document.getElementById('local').value.trim(),
@@ -453,32 +592,37 @@
         };
 
         try {
-            const mesReferencia = obterMesFaturaAtual(); 
-            const faturaRef = ref(db, `financas/faturas/${mesReferencia}`);
-            const novoItemRef = push(faturaRef);
-            await set(novoItemRef, novoGasto);
+            const mesReal = obterMesFaturaAtual(); 
+            const faturaRef = ref(db, `financas/faturas/${mesReal}`);
+            await set(push(faturaRef), novoGasto);
 
             financeForm.reset();
-            parcelasDiv.classList.remove('visible');
+            document.getElementById('parcelasDiv').classList.remove('visible');
+            
+            if (filtroMes.value !== mesReal) {
+                filtroMes.value = mesReal;
+                carregarDashboard(mesReal);
+            }
         } catch (erro) {
-            console.error("Erro ao salvar:", erro);
-            alert("Erro ao salvar. Verifique se você está logada.");
+            alert("Erro ao salvar.");
         } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "Registrar Gasto";
+            btnSubmit.disabled = false;
+            btnSubmit.innerText = "Registrar";
         }
     });
-</script>
 
-<script>
-    // Registra o Service Worker
-    if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js')
-                .then((reg) => console.log('Service Worker registrado!', reg))
-                .catch((err) => console.log('Erro no Service Worker', err));
-        });
-    }
+    corpoTabela.addEventListener('click', async (e) => {
+        const btnDelete = e.target.closest('.btn-delete');
+        if (btnDelete && confirm("Tem certeza que deseja apagar este gasto?")) {
+            const idGasto = btnDelete.getAttribute('data-id');
+            const mesGasto = btnDelete.getAttribute('data-mes');
+            try {
+                await remove(ref(db, `financas/faturas/${mesGasto}/${idGasto}`));
+            } catch (error) {
+                alert("Erro ao excluir.");
+            }
+        }
+    });
 </script>
 
 </body>
