@@ -33,7 +33,7 @@
             --border-color: #003300;
         }
 
-        /* Tema Fresh Greens (Ajustado) */
+        /* Tema Fresh Greens */
         :root.theme-fresh-greens {
             --bg-color: #2d4a22; 
             --surface-color: #386641; 
@@ -42,13 +42,13 @@
             --border-color: #6a994e;
         }      
 
-        /* Tema Ice Cream (Mapeado para as variáveis corretas) */
+        /* Tema Ice Cream */
         :root.theme-ice-cream {
-            --bg-color: #feeac7; /* papaya-whip */
-            --surface-color: #fdf5e6; /* Cor leve para os blocos */
-            --primary-color: #d88180; /* light-coral */
-            --text-color: #724319; /* walnut */
-            --border-color: #f7b1b0; /* powder-blush */
+            --bg-color: #feeac7; 
+            --surface-color: #fdf5e6; 
+            --primary-color: #d88180; 
+            --text-color: #724319; 
+            --border-color: #f7b1b0; 
         }
 
         body {
@@ -144,39 +144,20 @@
         }
         
         .progress-text {
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-            margin-bottom: 12px; 
-            font-size: 0.95em; 
-            font-weight: 600;
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; font-size: 0.95em; font-weight: 600;
         }
 
-        .bloco-fatura {
-            display: flex;
-            align-items: center;
-            gap: 8px; /* Dá um respiro entre a palavra "Fatura" e a caixa do mês */
-        }
+        .bloco-fatura { display: flex; align-items: center; gap: 8px; }
         
         .input-mes {
-            background-color: var(--bg-color); 
-            color: var(--primary-color); 
-            border: 1px solid var(--primary-color);
-            border-radius: 20px; 
-            padding: 2px 8px; /* Reduzido levemente para poupar espaço */
-            font-family: inherit; 
-            font-size: 0.85em; /* Fonte um pouco menor */
-            font-weight: bold;
-            width: auto;
-            max-width: 135px; /* Evita que ocupe muito espaço da tela */
-            cursor: pointer;
-            outline: none;
+            background-color: var(--bg-color); color: var(--primary-color); 
+            border: 1px solid var(--primary-color); border-radius: 20px; 
+            padding: 2px 8px; font-family: inherit; font-size: 0.85em; 
+            font-weight: bold; width: auto; max-width: 135px; cursor: pointer; outline: none;
         }
         
-        .valor-total {
-            white-space: nowrap; /* Impede a quebra de linha do R$ 800 */
-            font-size: 0.9em;
-        }
+        .valor-total { white-space: nowrap; font-size: 0.9em; }
 
         .progress-bg {
             background-color: var(--bg-color); border-radius: 8px; height: 14px;
@@ -200,7 +181,10 @@
             background-color: var(--surface-color); padding: 16px; border-radius: 8px;
             border: 1px solid var(--border-color); overflow-x: auto;
         }
-        .historico-container h3 { margin-top: 0; font-size: 1.1em; color: var(--primary-color); margin-bottom: 12px; }
+        .historico-header {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+        }
+        .historico-header h3 { margin: 0; font-size: 1.1em; color: var(--primary-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
         th, td { text-align: left; padding: 10px 4px; border-bottom: 1px solid var(--border-color); }
         th { font-weight: normal; opacity: 0.7; }
@@ -309,7 +293,10 @@
 
     <!-- HISTÓRICO -->
     <div class="historico-container">
-        <h3>Histórico deste ciclo</h3>
+        <div class="historico-header">
+            <h3>Histórico deste ciclo</h3>
+            <button id="btnExportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color);">⬇️ CSV</button>
+        </div>
         <table>
             <thead>
                 <tr>
@@ -357,24 +344,15 @@
     
     let graficoInstancia = null;
     let listenerAtual = null;
+    let dadosAtuaisCSV = null; // Variável global para guardar os dados atuais para exportação
 
     // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
     const getChartColors = () => {
         const theme = document.documentElement.className;
-        
-        // Mantido: Tons terrosos e quentes bem distintos
         if (theme === 'theme-gruvbox') return ['#fabd2f', '#b8bb26', '#fb4934', '#fe8019', '#83a598', '#d3869b'];
-        
-        // Novo Retro: Cores neon vibrantes (Verde, Ciano, Rosa, Amarelo, Roxo, Azul) que brilham no fundo preto
         if (theme === 'theme-retro') return ['#39ff14', '#04d9ff', '#ff71ce', '#ffea00', '#bc13fe', '#1370fe'];
-        
-        // Novo Fresh Greens: Tons da natureza com alto contraste (Laranja terra, Turquesa, Amarelo sol, Telha, Verde escuro, Verde claro)
         if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
-        
-        // Novo Ice Cream: "Sabores" bem definidos (Morango, Mirtilo, Manga, Menta, Chocolate, Cereja) para destacar no fundo claro
         if (theme === 'theme-ice-cream') return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180'];
-        
-        // Padrão Drácula
         return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
     };
 
@@ -389,7 +367,6 @@
         document.documentElement.className = temasClasses[temaAtualIndex];
         btnTheme.innerText = temasNomes[temaAtualIndex];
         
-        // Atualiza as cores do gráfico em tempo real se ele já existir
         if (graficoInstancia) {
             graficoInstancia.data.datasets[0].backgroundColor = getChartColors();
             graficoInstancia.update();
@@ -426,7 +403,7 @@
                 labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
                 datasets: [{
                     data: valores,
-                    backgroundColor: getChartColors(), // Cores agora vêm da função
+                    backgroundColor: getChartColors(),
                     borderWidth: 0, hoverOffset: 4
                 }]
             },
@@ -489,6 +466,7 @@
         onValue(listenerAtual, (snapshot) => {
             let totalGasto = 0;
             const dados = snapshot.val();
+            dadosAtuaisCSV = dados; // Salva os dados para o export
             const dadosCategorias = { mercado: 0, transporte: 0, alimentacao: 0, saude: 0, lazer: 0, outros: 0 };
             
             corpoTabela.innerHTML = '';
@@ -533,9 +511,8 @@
             const barra = document.getElementById('barraProgresso');
             barra.style.width = `${porcentagem}%`;
 
-            // A cor da barra também acompanha a cor primária do tema agora
             if (porcentagem >= 100) {
-                barra.style.backgroundColor = '#cf6679'; // Só fica vermelho se estourar
+                barra.style.backgroundColor = '#cf6679';
             } else {
                 barra.style.backgroundColor = 'var(--primary-color)';
             }
@@ -543,6 +520,48 @@
             gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado);
         });
     }
+
+    // --- LÓGICA DE EXPORTAR CSV ---
+    document.getElementById('btnExportar').addEventListener('click', () => {
+        if (!dadosAtuaisCSV) {
+            alert("Não há dados registrados neste mês para exportar.");
+            return;
+        }
+
+        // Converte os dados do Firebase para um array e ordena
+        const listaGastos = Object.keys(dadosAtuaisCSV).map(key => {
+            return { id: key, ...dadosAtuaisCSV[key] };
+        }).sort((a, b) => new Date(a.data) - new Date(b.data)); // Ordena do mais antigo pro mais novo no CSV
+
+        // Define o cabeçalho do arquivo
+        let csvContent = "Data,Local,Categoria,Valor,Parcela\n";
+
+        listaGastos.forEach(g => {
+            const dataObj = new Date(g.data);
+            const dia = String(dataObj.getDate()).padStart(2, '0');
+            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+            const ano = dataObj.getFullYear();
+            const dataFormatada = `${dia}/${mes}/${ano}`;
+
+            const parcela = g.parcelado ? `${g.parcelaAtual}/${g.parcelaTotal}` : "Nao";
+            
+            // Colocamos o local entre aspas duplas caso você tenha usado vírgulas no texto, para não quebrar a planilha
+            const localTratado = `"${g.local.replace(/"/g, '""')}"`;
+
+            csvContent += `${dataFormatada},${localTratado},${g.categoria},${g.valor.toFixed(2)},${parcela}\n`;
+        });
+
+        // Cria o arquivo virtual e dispara o download
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `fatura_${filtroMes.value}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
