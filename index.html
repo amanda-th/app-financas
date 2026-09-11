@@ -407,6 +407,7 @@
         return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
     };
 
+    // --- LÓGICA DE TEMAS ---
     const temasClasses = ['', 'theme-gruvbox', 'theme-retro', 'theme-fresh-greens', 'theme-ice-cream'];
     const temasNomes = ['🎨 Drácula', '🎨 Gruvbox', '🎨 Terminal', '🎨 Fresh', '🎨 Sorvete'];
     let temaAtualIndex = 0;
@@ -418,7 +419,10 @@
         btnTheme.innerText = temasNomes[temaAtualIndex];
         
         if (graficoInstancia) {
+            // Atualiza as cores das fatias
             graficoInstancia.data.datasets[0].backgroundColor = getChartColors();
+            // Atualiza a cor da fonte da legenda para bater com o tema novo!
+            graficoInstancia.options.plugins.legend.labels.color = getComputedStyle(document.body).getPropertyValue('--text-color').trim();
             graficoInstancia.update();
         }
     });
