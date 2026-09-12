@@ -10,22 +10,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
+        /* 1. Tema Cozy Earth (Padrão/Principal) */
         :root {
-            --bg-color: #121212; --surface-color: #1e1e1e;
-            --primary-color: #bb86fc; --text-color: #e0e0e0; --border-color: #444;
+            --bg-color: #d2d0baff; /* bone */
+            --surface-color: #e5c1bdff; /* cotton-rose */
+            --primary-color: #7b9e87ff; /* muted-teal */
+            --text-color: #5e747fff; /* blue-slate */
+            --border-color: #b6be9cff; /* dry-sage */
         }
-        :root.theme-gruvbox {
-            --bg-color: #282828; --surface-color: #3c3836;
-            --primary-color: #fabd2f; --text-color: #ebdbb2; --border-color: #504945;
+
+        /* 2. Tema Fiery Ocean */
+        :root.theme-fiery-ocean {
+            --bg-color: #003049ff; /* deep-space-blue */
+            --surface-color: #780000ff; /* molten-lava */
+            --primary-color: #669bbcff; /* steel-blue */
+            --text-color: #fdf0d5ff; /* papaya-whip */
+            --border-color: #c1121fff; /* brick-red */
         }
-        :root.theme-retro {
-            --bg-color: #000000; --surface-color: #0a0a0a;
-            --primary-color: #00ff00; --text-color: #cccccc; --border-color: #003300;
+
+        /* 3. Tema Summer Dream */
+        :root.theme-summer-dream {
+            --bg-color: #fdfcdcff; /* light-yellow */
+            --surface-color: #fed9b7ff; /* soft-apricot */
+            --primary-color: #f07167ff; /* vibrant-coral */
+            --text-color: #0081a7ff; /* cerulean */
+            --border-color: #00afb9ff; /* tropical-teal */
         }
+
+        /* 4. Tema Ocean Pearl */
+        :root.theme-ocean-pearl {
+            --bg-color: #edf6f9ff; /* alice-blue */
+            --surface-color: #ffddd2ff; /* almond-silk */
+            --primary-color: #e29578ff; /* tangerine-dream */
+            --text-color: #006d77ff; /* stormy-teal */
+            --border-color: #83c5beff; /* pearl-aqua */
+        }
+
+        /* 5. Tema Fresh Greens (Mantido) */
         :root.theme-fresh-greens {
             --bg-color: #2d4a22; --surface-color: #386641; 
             --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
         }      
+
+        /* 6. Tema Ice Cream (Mantido) */
         :root.theme-ice-cream {
             --bg-color: #feeac7; --surface-color: #fdf5e6; 
             --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
@@ -40,7 +67,7 @@
         
         .container {
             background-color: var(--surface-color); padding: 24px; border-radius: 12px;
-            width: 100%; max-width: 450px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            width: 100%; max-width: 450px; box-shadow: 0 4px 12px rgba(0,0,0,0.15);
             margin-bottom: 20px; transition: background-color 0.3s;
         }
         
@@ -66,7 +93,7 @@
             transition: border-color 0.2s;
         }
         input:focus, select:focus { outline: none; border-color: var(--primary-color); }
-        input[type="date"] { color-scheme: dark; }
+        input[type="date"], input[type="month"] { color-scheme: light dark; }
         
         .quick-add-container { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 5px; }
         
@@ -133,10 +160,11 @@
         .historico-header h3 { margin: 0; font-size: 1.1em; color: var(--primary-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
         th, td { text-align: left; padding: 12px 4px; border-bottom: 1px solid var(--border-color); }
-        th { font-weight: 500; opacity: 0.7; }
+        th { font-weight: 500; opacity: 0.8; }
         
         .tag-parcela { font-size: 0.8em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 6px; margin-left: 6px; font-weight: 600;}
-        .btn-delete { background-color: transparent !important; color: #cf6679 !important; width: auto !important; padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer; }
+        .btn-delete { background-color: transparent !important; color: var(--border-color) !important; width: auto !important; padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer; }
+        .btn-delete:hover { color: #cf6679 !important; }
 
         @media (max-width: 480px) {
             body { padding: 10px; }
@@ -163,7 +191,8 @@
     
     <div class="header-tools">
         <h2 style="margin: 0;">Finanças</h2>
-        <button id="btnTheme" class="btn-theme">🎨 Drácula</button>
+        <!-- O tema inicial agora é o Cozy Earth -->
+        <button id="btnTheme" class="btn-theme">🎨 Cozy Earth</button>
     </div>
     
     <h3 style="font-size: 1.1em; color: var(--primary-color); margin-bottom: 8px; margin-top: 0;">Registrar Gasto</h3>
@@ -300,20 +329,23 @@
     let dadosAtuaisCSV = null; 
 
     inputDataGasto.value = new Date().toISOString().split('T')[0];
-
     Chart.defaults.font.family = "'Fredoka', sans-serif";
 
+    // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
     const getChartColors = () => {
         const theme = document.documentElement.className;
-        if (theme === 'theme-gruvbox') return ['#fabd2f', '#b8bb26', '#fb4934', '#fe8019', '#83a598', '#d3869b'];
-        if (theme === 'theme-retro') return ['#39ff14', '#04d9ff', '#ff71ce', '#ffea00', '#bc13fe', '#1370fe'];
+        if (theme === 'theme-fiery-ocean') return ['#c1121f', '#669bbc', '#fdf0d5', '#780000', '#003049', '#e07a5f'];
+        if (theme === 'theme-summer-dream') return ['#f07167', '#00afb9', '#0081a7', '#fed9b7', '#fdfcdc', '#84a98c'];
+        if (theme === 'theme-ocean-pearl') return ['#e29578', '#83c5be', '#006d77', '#ffddd2', '#edf6f9', '#a5a58d'];
         if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
         if (theme === 'theme-ice-cream') return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180'];
-        return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
+        // Cozy Earth (Padrão atual)
+        return ['#7b9e87', '#5e747f', '#b6be9c', '#e5c1bd', '#d2d0ba', '#9ca89e']; 
     };
 
-    const temasClasses = ['', 'theme-gruvbox', 'theme-retro', 'theme-fresh-greens', 'theme-ice-cream'];
-    const temasNomes = ['🎨 Drácula', '🎨 Gruvbox', '🎨 Terminal', '🎨 Fresh', '🎨 Sorvete'];
+    // --- LÓGICA DE TEMAS ATUALIZADA ---
+    const temasClasses = ['', 'theme-fiery-ocean', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-ice-cream'];
+    const temasNomes = ['🎨 Cozy Earth', '🎨 Fiery Ocean', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Sorvete'];
     let temaAtualIndex = 0;
     const btnTheme = document.getElementById('btnTheme');
 
@@ -394,7 +426,7 @@
 
             if (saldoDisponivel > 0 && diasRestantes > 0) {
                 const mediaDiaria = saldoDisponivel / diasRestantes;
-                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Você tem um teto seguro de <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
+                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
                 
                 if (listaGastos && listaGastos.length > 0) {
                     const ultimoGastoObj = new Date(listaGastos[0].data);
@@ -409,7 +441,6 @@
                         dica += `<br><span class="ofensiva">🔥 ${diasSemGastar} dia(s) sem passar o cartão! Você pode gastar R$ ${valorAcumulado.toFixed(2)} hoje!</span>`;
                     }
                 }
-
             } else if (saldoDisponivel <= 0) {
                 dica += `<br><br>⏳ <b>Alerta:</b> O limite esgotou! Congele o cartão até o dia 9.`;
             }
@@ -481,7 +512,7 @@
             barra.style.width = `${porcentagem}%`;
 
             if (porcentagem >= 100) {
-                barra.style.backgroundColor = '#cf6679';
+                barra.style.backgroundColor = '#cf6679'; // Mantive vermelho padrão caso passe do limite
             } else {
                 barra.style.backgroundColor = 'var(--primary-color)';
             }
