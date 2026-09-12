@@ -19,13 +19,13 @@
             --border-color: #b6be9cff; /* dry-sage */
         }
 
-        /* 2. Tema Fiery Ocean */
-        :root.theme-fiery-ocean {
-            --bg-color: #003049ff; /* deep-space-blue */
-            --surface-color: #780000ff; /* molten-lava */
-            --primary-color: #669bbcff; /* steel-blue */
-            --text-color: #fdf0d5ff; /* papaya-whip */
-            --border-color: #c1121fff; /* brick-red */
+        /* 2. Tema Peachy Glow (Substituiu Fiery Ocean) */
+        :root.theme-peachy-glow {
+            --bg-color: #472d30ff; /* deep-mocha */
+            --surface-color: #723d46ff; /* wine-plum */
+            --primary-color: #e26d5cff; /* vibrant-coral */
+            --text-color: #ffe1a8ff; /* soft-peach */
+            --border-color: #c9cba3ff; /* dry-sage */
         }
 
         /* 3. Tema Summer Dream */
@@ -46,13 +46,13 @@
             --border-color: #83c5beff; /* pearl-aqua */
         }
 
-        /* 5. Tema Fresh Greens (Mantido) */
+        /* 5. Tema Fresh Greens */
         :root.theme-fresh-greens {
             --bg-color: #2d4a22; --surface-color: #386641; 
             --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
         }      
 
-        /* 6. Tema Ice Cream (Mantido) */
+        /* 6. Tema Ice Cream */
         :root.theme-ice-cream {
             --bg-color: #feeac7; --surface-color: #fdf5e6; 
             --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
@@ -191,7 +191,6 @@
     
     <div class="header-tools">
         <h2 style="margin: 0;">Finanças</h2>
-        <!-- O tema inicial agora é o Cozy Earth -->
         <button id="btnTheme" class="btn-theme">🎨 Cozy Earth</button>
     </div>
     
@@ -334,7 +333,7 @@
     // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
     const getChartColors = () => {
         const theme = document.documentElement.className;
-        if (theme === 'theme-fiery-ocean') return ['#c1121f', '#669bbc', '#fdf0d5', '#780000', '#003049', '#e07a5f'];
+        if (theme === 'theme-peachy-glow') return ['#e26d5c', '#c9cba3', '#ffe1a8', '#723d46', '#e5989b', '#472d30'];
         if (theme === 'theme-summer-dream') return ['#f07167', '#00afb9', '#0081a7', '#fed9b7', '#fdfcdc', '#84a98c'];
         if (theme === 'theme-ocean-pearl') return ['#e29578', '#83c5be', '#006d77', '#ffddd2', '#edf6f9', '#a5a58d'];
         if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
@@ -344,8 +343,8 @@
     };
 
     // --- LÓGICA DE TEMAS ATUALIZADA ---
-    const temasClasses = ['', 'theme-fiery-ocean', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-ice-cream'];
-    const temasNomes = ['🎨 Cozy Earth', '🎨 Fiery Ocean', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Sorvete'];
+    const temasClasses = ['', 'theme-peachy-glow', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-ice-cream'];
+    const temasNomes = ['🎨 Cozy Earth', '🎨 Peachy Glow', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Sorvete'];
     let temaAtualIndex = 0;
     const btnTheme = document.getElementById('btnTheme');
 
@@ -512,7 +511,7 @@
             barra.style.width = `${porcentagem}%`;
 
             if (porcentagem >= 100) {
-                barra.style.backgroundColor = '#cf6679'; // Mantive vermelho padrão caso passe do limite
+                barra.style.backgroundColor = '#cf6679'; 
             } else {
                 barra.style.backgroundColor = 'var(--primary-color)';
             }
