@@ -5,143 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Importando fontes mais dinâmicas e arredondadas do Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* Tema Padrão (Drácula) */
         :root {
-            --bg-color: #121212;
-            --surface-color: #1e1e1e;
-            --primary-color: #bb86fc;
-            --text-color: #e0e0e0;
-            --border-color: #444;
+            --bg-color: #121212; --surface-color: #1e1e1e;
+            --primary-color: #bb86fc; --text-color: #e0e0e0; --border-color: #444;
         }
-
-        /* Tema Gruvbox */
         :root.theme-gruvbox {
-            --bg-color: #282828;
-            --surface-color: #3c3836;
-            --primary-color: #fabd2f;
-            --text-color: #ebdbb2;
-            --border-color: #504945;
+            --bg-color: #282828; --surface-color: #3c3836;
+            --primary-color: #fabd2f; --text-color: #ebdbb2; --border-color: #504945;
         }
-
-        /* Tema Retro Terminal */
         :root.theme-retro {
-            --bg-color: #000000;
-            --surface-color: #0a0a0a;
-            --primary-color: #00ff00;
-            --text-color: #cccccc;
-            --border-color: #003300;
+            --bg-color: #000000; --surface-color: #0a0a0a;
+            --primary-color: #00ff00; --text-color: #cccccc; --border-color: #003300;
         }
-
-        /* Tema Fresh Greens */
         :root.theme-fresh-greens {
-            --bg-color: #2d4a22; 
-            --surface-color: #386641; 
-            --primary-color: #a7c957; 
-            --text-color: #f2e8cf; 
-            --border-color: #6a994e;
+            --bg-color: #2d4a22; --surface-color: #386641; 
+            --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
         }      
-
-        /* Tema Ice Cream */
         :root.theme-ice-cream {
-            --bg-color: #feeac7; 
-            --surface-color: #fdf5e6; 
-            --primary-color: #d88180; 
-            --text-color: #724319; 
-            --border-color: #f7b1b0; 
+            --bg-color: #feeac7; --surface-color: #fdf5e6; 
+            --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
         }
 
         body {
-            /* Aplicando a nova fonte em todo o projeto */
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 400;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
+            font-family: 'Fredoka', sans-serif; font-weight: 400;
+            background-color: var(--bg-color); color: var(--text-color);
+            margin: 0; padding: 20px; display: flex; justify-content: center;
             transition: background-color 0.3s, color 0.3s;
         }
         
         .container {
-            background-color: var(--surface-color);
-            padding: 24px;
-            border-radius: 12px;
-            width: 100%;
-            max-width: 450px; /* Aumentei um pouquinho o limite máximo pro PC */
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            margin-bottom: 20px;
-            transition: background-color 0.3s;
+            background-color: var(--surface-color); padding: 24px; border-radius: 12px;
+            width: 100%; max-width: 450px; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 20px; transition: background-color 0.3s;
         }
         
-        .header-tools {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
+        .header-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         
         .btn-theme {
-            background: transparent;
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-family: 'Fredoka', sans-serif;
-            font-weight: 500;
-            font-size: 0.85em;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: transparent; color: var(--text-color); border: 1px solid var(--border-color);
+            padding: 6px 14px; border-radius: 20px; font-family: 'Fredoka', sans-serif;
+            font-weight: 500; font-size: 0.85em; cursor: pointer; transition: all 0.2s;
         }
-        .btn-theme:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
+        .btn-theme:hover { border-color: var(--primary-color); color: var(--primary-color); }
 
-        h2 { 
-            margin-top: 0; 
-            color: var(--primary-color); 
-            font-weight: 600; /* Títulos mais gordinhos para dar destaque */
-            letter-spacing: 0.5px;
-        }
+        h2 { margin-top: 0; color: var(--primary-color); font-weight: 600; letter-spacing: 0.5px; }
         h3 { font-weight: 600; }
         
         .form-group { margin-bottom: 16px; }
         label { display: block; margin-bottom: 6px; font-size: 0.95em; font-weight: 500;}
         
         input, select {
-            width: 100%;
-            padding: 10px;
-            background-color: var(--bg-color);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            border-radius: 8px; /* Bordas mais arredondadas combinando com a fonte */
-            box-sizing: border-box;
-            font-family: 'Fredoka', sans-serif;
+            width: 100%; padding: 10px; background-color: var(--bg-color);
+            border: 1px solid var(--border-color); color: var(--text-color);
+            border-radius: 8px; box-sizing: border-box; font-family: 'Fredoka', sans-serif;
             transition: border-color 0.2s;
         }
-        input:focus, select:focus {
-            outline: none;
-            border-color: var(--primary-color);
-        }
+        input:focus, select:focus { outline: none; border-color: var(--primary-color); }
+        input[type="date"] { color-scheme: dark; }
         
-        .quick-add-container {
-            display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 5px;
-        }
+        .quick-add-container { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 5px; }
         
         .btn-quick {
             white-space: nowrap; padding: 6px 12px; font-size: 0.85em; font-weight: 500;
             background-color: transparent; color: var(--primary-color);
             border: 1px solid var(--primary-color); border-radius: 20px;
-            font-family: 'Fredoka', sans-serif;
-            cursor: pointer; width: auto; margin: 0; transition: all 0.2s;
+            font-family: 'Fredoka', sans-serif; cursor: pointer; width: auto; margin: 0; transition: all 0.2s;
         }
         .btn-quick:hover { background-color: var(--primary-color); color: var(--bg-color); }
 
@@ -151,10 +84,9 @@
         .parcelas-container.visible { display: flex; }
         
         button[type="submit"] {
-            width: 100%; padding: 14px; background-color: var(--primary-color);
-            color: var(--bg-color); border: none; border-radius: 8px; 
-            font-weight: 600; font-size: 1em; font-family: 'Fredoka', sans-serif;
-            cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
+            width: 100%; padding: 14px; background-color: var(--primary-color); color: var(--bg-color); 
+            border: none; border-radius: 8px; font-weight: 600; font-size: 1em; 
+            font-family: 'Fredoka', sans-serif; cursor: pointer; margin-top: 10px; transition: opacity 0.2s;
         }
         button[type="submit"]:hover { opacity: 0.8; }
         
@@ -163,18 +95,14 @@
             margin-bottom: 24px; border: 1px solid var(--border-color);
         }
         
-        .progress-text {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; font-size: 1em; font-weight: 500;
-        }
-
+        .progress-text { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 1em; font-weight: 500; }
         .bloco-fatura { display: flex; align-items: center; gap: 8px; }
         
         .input-mes {
             background-color: var(--bg-color); color: var(--primary-color); 
-            border: 1px solid var(--primary-color); border-radius: 20px; 
-            padding: 4px 10px; font-family: 'Fredoka', sans-serif; font-size: 0.9em; 
-            font-weight: 600; width: auto; max-width: 150px; cursor: pointer; outline: none;
+            border: 1px solid var(--primary-color); border-radius: 20px; padding: 4px 10px; 
+            font-family: 'Fredoka', sans-serif; font-size: 0.9em; font-weight: 600; 
+            width: auto; max-width: 150px; cursor: pointer; outline: none;
         }
         
         .valor-total { white-space: nowrap; font-size: 0.95em; font-weight: 600; }
@@ -184,8 +112,7 @@
             width: 100%; overflow: hidden; border: 1px solid var(--border-color);
         }
         .progress-fill {
-            height: 100%; width: 0%; background-color: var(--primary-color);
-            transition: width 0.4s ease, background-color 0.4s ease;
+            height: 100%; width: 0%; background-color: var(--primary-color); transition: width 0.4s ease, background-color 0.4s ease;
         }
         
         .chart-container { margin-top: 24px; margin-bottom: 20px; }
@@ -196,52 +123,28 @@
             line-height: 1.5; color: var(--text-color); margin-bottom: 24px;
         }
         .ai-feedback span.destaque { color: var(--primary-color); font-weight: 600; }
+        .ai-feedback .ofensiva { display: inline-block; background-color: var(--primary-color); color: var(--bg-color); padding: 4px 10px; border-radius: 12px; font-size: 0.9em; font-weight: 600; margin-top: 8px;}
 
         .historico-container {
             background-color: var(--surface-color); padding: 16px; border-radius: 12px;
             border: 1px solid var(--border-color); overflow-x: auto;
         }
-        .historico-header {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
-        }
+        .historico-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
         .historico-header h3 { margin: 0; font-size: 1.1em; color: var(--primary-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
         th, td { text-align: left; padding: 12px 4px; border-bottom: 1px solid var(--border-color); }
         th { font-weight: 500; opacity: 0.7; }
         
         .tag-parcela { font-size: 0.8em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 6px; margin-left: 6px; font-weight: 600;}
-        .btn-delete {
-            background-color: transparent !important; color: #cf6679 !important; width: auto !important;
-            padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer;
-        }
+        .btn-delete { background-color: transparent !important; color: #cf6679 !important; width: auto !important; padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer; }
 
-        /* ---------------------------------------------------
-           MEDIA QUERIES - RESPONSIVIDADE PARA CELULAR 
-        --------------------------------------------------- */
         @media (max-width: 480px) {
-            body {
-                padding: 10px; /* Reduz a margem inútil nas bordas no celular */
-            }
-            .container {
-                padding: 16px;
-            }
-            .progress-text {
-                /* Se a tela for pequena, quebra a linha do mês e do valor */
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 12px; 
-            }
-            .bloco-fatura {
-                width: 100%;
-                justify-content: space-between; /* Empurra o input pro canto direito */
-            }
-            .valor-total {
-                align-self: flex-start;
-                font-size: 1.2em; /* Deixa o dinheiro maior para ler melhor de pé */
-            }
-            .input-mes {
-                max-width: 100%;
-            }
+            body { padding: 10px; }
+            .container { padding: 16px; }
+            .progress-text { flex-direction: column; align-items: flex-start; gap: 12px; }
+            .bloco-fatura { width: 100%; justify-content: space-between; }
+            .valor-total { align-self: flex-start; font-size: 1.2em; }
+            .input-mes { max-width: 100%; }
         }
     </style>
 </head>
@@ -258,7 +161,6 @@
 
 <div class="container" id="appContainer">
     
-    <!-- SELETOR DE TEMAS -->
     <div class="header-tools">
         <h2 style="margin: 0;">Finanças</h2>
         <button id="btnTheme" class="btn-theme">🎨 Drácula</button>
@@ -281,6 +183,11 @@
         <div class="form-group">
             <label>Local / Descrição</label>
             <input type="text" id="local" placeholder="Ex: Mercado" required>
+        </div>
+
+        <div class="form-group">
+            <label>Data da Compra</label>
+            <input type="date" id="dataGasto" required>
         </div>
 
         <div class="form-group">
@@ -318,7 +225,6 @@
 
     <hr style="border: 1px solid var(--border-color); margin-bottom: 24px;">
 
-    <!-- BARRA DE PROGRESSO & FILTRO -->
     <div class="dashboard">
         <div class="progress-text">
             <div class="bloco-fatura">
@@ -332,7 +238,6 @@
         </div>
     </div>
     
-    <!-- GRÁFICO E ANÁLISE -->
     <div class="chart-container">
         <canvas id="meuGrafico"></canvas>
     </div>
@@ -340,7 +245,6 @@
         Carregando análise...
     </div>
 
-    <!-- HISTÓRICO -->
     <div class="historico-container">
         <div class="historico-header">
             <h3>Histórico deste ciclo</h3>
@@ -360,7 +264,6 @@
             </tbody>
         </table>
     </div>
-
 </div>
 
 <script type="module">
@@ -387,6 +290,7 @@
     const financeForm = document.getElementById('financeForm');
     const corpoTabela = document.getElementById('corpoTabela');
     const filtroMes = document.getElementById('filtroMes');
+    const inputDataGasto = document.getElementById('dataGasto');
     
     appContainer.style.display = 'none';
     const LIMITE_FATURA = 800.00;
@@ -395,7 +299,8 @@
     let listenerAtual = null;
     let dadosAtuaisCSV = null; 
 
-    // Chart font customization to match new UI font
+    inputDataGasto.value = new Date().toISOString().split('T')[0];
+
     Chart.defaults.font.family = "'Fredoka', sans-serif";
 
     const getChartColors = () => {
@@ -407,7 +312,6 @@
         return ['#bb86fc', '#03dac6', '#cf6679', '#ffeb3b', '#ff9800', '#9e9e9e']; 
     };
 
-    // --- LÓGICA DE TEMAS ---
     const temasClasses = ['', 'theme-gruvbox', 'theme-retro', 'theme-fresh-greens', 'theme-ice-cream'];
     const temasNomes = ['🎨 Drácula', '🎨 Gruvbox', '🎨 Terminal', '🎨 Fresh', '🎨 Sorvete'];
     let temaAtualIndex = 0;
@@ -419,9 +323,7 @@
         btnTheme.innerText = temasNomes[temaAtualIndex];
         
         if (graficoInstancia) {
-            // Atualiza as cores das fatias
             graficoInstancia.data.datasets[0].backgroundColor = getChartColors();
-            // Atualiza a cor da fonte da legenda para bater com o tema novo!
             graficoInstancia.options.plugins.legend.labels.color = getComputedStyle(document.body).getPropertyValue('--text-color').trim();
             graficoInstancia.update();
         }
@@ -443,7 +345,7 @@
         return data.toISOString().slice(0, 7); 
     }
 
-    function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado) {
+    function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos) {
         const labels = Object.keys(dadosCategorias);
         const valores = Object.values(dadosCategorias);
         
@@ -455,9 +357,7 @@
             data: {
                 labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
                 datasets: [{
-                    data: valores,
-                    backgroundColor: getChartColors(),
-                    borderWidth: 0, hoverOffset: 4
+                    data: valores, backgroundColor: getChartColors(), borderWidth: 0, hoverOffset: 4
                 }]
             },
             options: { plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim(), font: {family: "'Fredoka', sans-serif"} } } } }
@@ -494,7 +394,22 @@
 
             if (saldoDisponivel > 0 && diasRestantes > 0) {
                 const mediaDiaria = saldoDisponivel / diasRestantes;
-                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para o cartão virar. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
+                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Você tem um teto seguro de <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
+                
+                if (listaGastos && listaGastos.length > 0) {
+                    const ultimoGastoObj = new Date(listaGastos[0].data);
+                    const hoje = new Date(); hoje.setHours(0,0,0,0);
+                    ultimoGastoObj.setHours(0,0,0,0);
+                    
+                    const diffTime = hoje - ultimoGastoObj;
+                    const diasSemGastar = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                    
+                    if (diasSemGastar > 0) {
+                        const valorAcumulado = mediaDiaria * diasSemGastar;
+                        dica += `<br><span class="ofensiva">🔥 ${diasSemGastar} dia(s) sem passar o cartão! Você pode gastar R$ ${valorAcumulado.toFixed(2)} hoje!</span>`;
+                    }
+                }
+
             } else if (saldoDisponivel <= 0) {
                 dica += `<br><br>⏳ <b>Alerta:</b> O limite esgotou! Congele o cartão até o dia 9.`;
             }
@@ -523,9 +438,10 @@
             const dadosCategorias = { mercado: 0, transporte: 0, alimentacao: 0, saude: 0, lazer: 0, outros: 0 };
             
             corpoTabela.innerHTML = '';
+            let listaGastos = [];
 
             if (dados) {
-                const listaGastos = Object.keys(dados).map(key => {
+                listaGastos = Object.keys(dados).map(key => {
                     return { id: key, ...dados[key] };
                 }).sort((a, b) => new Date(b.data) - new Date(a.data));
 
@@ -537,9 +453,9 @@
                         dadosCategorias['outros'] += gasto.valor;
                     }
 
-                    const dataObj = new Date(gasto.data);
-                    const dia = String(dataObj.getDate()).padStart(2, '0');
-                    const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
+                    const dataSplited = gasto.data.split('T')[0].split('-');
+                    const dia = dataSplited[2];
+                    const mes = dataSplited[1];
                     let textoParcela = gasto.parcelado ? `<span class="tag-parcela">${gasto.parcelaAtual}/${gasto.parcelaTotal}</span>` : '';
 
                     const tr = document.createElement('tr');
@@ -570,7 +486,7 @@
                 barra.style.backgroundColor = 'var(--primary-color)';
             }
             
-            gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado);
+            gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos);
         });
     }
 
@@ -587,11 +503,8 @@
         let csvContent = "Data,Local,Categoria,Valor,Parcela\n";
 
         listaGastos.forEach(g => {
-            const dataObj = new Date(g.data);
-            const dia = String(dataObj.getDate()).padStart(2, '0');
-            const mes = String(dataObj.getMonth() + 1).padStart(2, '0');
-            const ano = dataObj.getFullYear();
-            const dataFormatada = `${dia}/${mes}/${ano}`;
+            const dataSplited = g.data.split('T')[0].split('-');
+            const dataFormatada = `${dataSplited[2]}/${dataSplited[1]}/${dataSplited[0]}`;
 
             const parcela = g.parcelado ? `${g.parcelaAtual}/${g.parcelaTotal}` : "Nao";
             const localTratado = `"${g.local.replace(/"/g, '""')}"`;
@@ -624,9 +537,7 @@
         }
     });
 
-    filtroMes.addEventListener('change', (e) => {
-        carregarDashboard(e.target.value);
-    });
+    filtroMes.addEventListener('change', (e) => { carregarDashboard(e.target.value); });
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -647,11 +558,15 @@
         btnSubmit.innerText = "Salvando...";
 
         const isParcelado = document.getElementById('isParcelado').checked;
+        
+        const dataSelecionada = document.getElementById('dataGasto').value; 
+        const horaFixa = new Date().toISOString().split('T')[1];
+        
         const novoGasto = {
             valor: parseFloat(document.getElementById('valor').value),
             local: document.getElementById('local').value.trim(),
             categoria: document.getElementById('categoria').value,
-            data: new Date().toISOString(),
+            data: `${dataSelecionada}T${horaFixa}`, 
             parcelado: isParcelado,
             parcelaAtual: isParcelado ? parseInt(document.getElementById('parcelaAtual').value, 10) : 1,
             parcelaTotal: isParcelado ? parseInt(document.getElementById('parcelaTotal').value, 10) : 1
@@ -663,6 +578,7 @@
             await set(push(faturaRef), novoGasto);
 
             financeForm.reset();
+            inputDataGasto.value = new Date().toISOString().split('T')[0];
             document.getElementById('parcelasDiv').classList.remove('visible');
             
             if (filtroMes.value !== mesReal) {
@@ -684,9 +600,7 @@
             const mesGasto = btnDelete.getAttribute('data-mes');
             try {
                 await remove(ref(db, `financas/faturas/${mesGasto}/${idGasto}`));
-            } catch (error) {
-                alert("Erro ao excluir.");
-            }
+            } catch (error) { alert("Erro ao excluir."); }
         }
     });
 </script>
