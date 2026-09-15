@@ -1,4 +1,4 @@
-# App Finanças — Gestão Financeira Pessoal
+# Gestão Financeira Pessoal
 
 <img width="500" alt="2026-09-15_16-35_1" src="https://github.com/user-attachments/assets/89576d10-c01a-413b-881a-6f644708bad2" />
 
