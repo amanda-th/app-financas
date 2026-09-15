@@ -10,52 +10,58 @@
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. Tema Cozy Earth (Padrão/Principal) */
+        /* 1. Tema Ice Cream (Agora é o Padrão/Principal) */
         :root {
-            --bg-color: #d2d0baff; /* bone */
-            --surface-color: #e5c1bdff; /* cotton-rose */
-            --primary-color: #7b9e87ff; /* muted-teal */
-            --text-color: #5e747fff; /* blue-slate */
-            --border-color: #b6be9cff; /* dry-sage */
+            --bg-color: #feeac7; 
+            --surface-color: #fdf5e6; 
+            --primary-color: #d88180; 
+            --text-color: #724319; 
+            --border-color: #f7b1b0; 
         }
 
-        /* 2. Tema Peachy Glow (Substituiu Fiery Ocean) */
+        /* 2. Tema Peachy Glow */
         :root.theme-peachy-glow {
-            --bg-color: #472d30ff; /* deep-mocha */
-            --surface-color: #723d46ff; /* wine-plum */
-            --primary-color: #e26d5cff; /* vibrant-coral */
-            --text-color: #ffe1a8ff; /* soft-peach */
-            --border-color: #c9cba3ff; /* dry-sage */
+            --bg-color: #472d30ff; 
+            --surface-color: #723d46ff; 
+            --primary-color: #e26d5cff; 
+            --text-color: #ffe1a8ff; 
+            --border-color: #c9cba3ff; 
         }
 
         /* 3. Tema Summer Dream */
         :root.theme-summer-dream {
-            --bg-color: #fdfcdcff; /* light-yellow */
-            --surface-color: #fed9b7ff; /* soft-apricot */
-            --primary-color: #f07167ff; /* vibrant-coral */
-            --text-color: #0081a7ff; /* cerulean */
-            --border-color: #00afb9ff; /* tropical-teal */
+            --bg-color: #fdfcdcff; 
+            --surface-color: #fed9b7ff; 
+            --primary-color: #f07167ff; 
+            --text-color: #0081a7ff; 
+            --border-color: #00afb9ff; 
         }
 
         /* 4. Tema Ocean Pearl */
         :root.theme-ocean-pearl {
-            --bg-color: #edf6f9ff; /* alice-blue */
-            --surface-color: #ffddd2ff; /* almond-silk */
-            --primary-color: #e29578ff; /* tangerine-dream */
-            --text-color: #006d77ff; /* stormy-teal */
-            --border-color: #83c5beff; /* pearl-aqua */
+            --bg-color: #edf6f9ff; 
+            --surface-color: #ffddd2ff; 
+            --primary-color: #e29578ff; 
+            --text-color: #006d77ff; 
+            --border-color: #83c5beff; 
         }
 
         /* 5. Tema Fresh Greens */
         :root.theme-fresh-greens {
-            --bg-color: #2d4a22; --surface-color: #386641; 
-            --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
+            --bg-color: #2d4a22; 
+            --surface-color: #386641; 
+            --primary-color: #a7c957; 
+            --text-color: #f2e8cf; 
+            --border-color: #6a994e;
         }      
 
-        /* 6. Tema Ice Cream */
-        :root.theme-ice-cream {
-            --bg-color: #feeac7; --surface-color: #fdf5e6; 
-            --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
+        /* 6. Tema Cozy Earth (Agora é opcional) */
+        :root.theme-cozy-earth {
+            --bg-color: #d2d0baff; 
+            --surface-color: #e5c1bdff; 
+            --primary-color: #7b9e87ff; 
+            --text-color: #5e747fff; 
+            --border-color: #b6be9cff; 
         }
 
         body {
@@ -191,7 +197,8 @@
     
     <div class="header-tools">
         <h2 style="margin: 0;">Finanças</h2>
-        <button id="btnTheme" class="btn-theme">🎨 Cozy Earth</button>
+        <!-- O tema inicial agora é o Sorvete -->
+        <button id="btnTheme" class="btn-theme">🎨 Sorvete</button>
     </div>
     
     <h3 style="font-size: 1.1em; color: var(--primary-color); margin-bottom: 8px; margin-top: 0;">Registrar Gasto</h3>
@@ -330,21 +337,22 @@
     inputDataGasto.value = new Date().toISOString().split('T')[0];
     Chart.defaults.font.family = "'Fredoka', sans-serif";
 
-    // --- CORES DINÂMICAS DO GRÁFICO POR TEMA ---
+    // --- CORES DINÂMICAS E CONTRASTANTES DO GRÁFICO POR TEMA ---
     const getChartColors = () => {
         const theme = document.documentElement.className;
-        if (theme === 'theme-peachy-glow') return ['#e26d5c', '#c9cba3', '#ffe1a8', '#723d46', '#e5989b', '#472d30'];
-        if (theme === 'theme-summer-dream') return ['#f07167', '#00afb9', '#0081a7', '#fed9b7', '#fdfcdc', '#84a98c'];
-        if (theme === 'theme-ocean-pearl') return ['#e29578', '#83c5be', '#006d77', '#ffddd2', '#edf6f9', '#a5a58d'];
+        if (theme === 'theme-peachy-glow') return ['#e26d5c', '#c9cba3', '#ffe1a8', '#f4a261', '#e5989b', '#2a9d8f'];
+        if (theme === 'theme-summer-dream') return ['#f07167', '#00afb9', '#0081a7', '#f4a261', '#9d4edd', '#84a98c'];
+        if (theme === 'theme-ocean-pearl') return ['#e29578', '#83c5be', '#006d77', '#d62828', '#f4a261', '#a5a58d'];
         if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
-        if (theme === 'theme-ice-cream') return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180'];
-        // Cozy Earth (Padrão atual)
-        return ['#7b9e87', '#5e747f', '#b6be9c', '#e5c1bd', '#d2d0ba', '#9ca89e']; 
+        if (theme === 'theme-cozy-earth') return ['#7b9e87', '#5e747f', '#b6be9c', '#e26d5c', '#e9c46a', '#9ca89e'];
+        
+        // Tema Ice Cream (Padrão) - Cores brilhantes garantidas de não sumir no fundo creme
+        return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180']; 
     };
 
-    // --- LÓGICA DE TEMAS ATUALIZADA ---
-    const temasClasses = ['', 'theme-peachy-glow', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-ice-cream'];
-    const temasNomes = ['🎨 Cozy Earth', '🎨 Peachy Glow', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Sorvete'];
+    // --- LÓGICA DE TEMAS ATUALIZADA (Ordem alterada) ---
+    const temasClasses = ['', 'theme-peachy-glow', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-cozy-earth'];
+    const temasNomes = ['🎨 Sorvete', '🎨 Peachy Glow', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Cozy Earth'];
     let temaAtualIndex = 0;
     const btnTheme = document.getElementById('btnTheme');
 
