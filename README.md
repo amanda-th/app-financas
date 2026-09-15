@@ -1,7 +1,5 @@
 # App Finanças — Gestão Financeira Pessoal
 
-<img width="500" alt="2026-09-15_16-34" src="https://github.com/user-attachments/assets/e2e36c3a-06af-4386-93a6-4a80f59e64c0" />
-<img width="500" alt="2026-09-15_16-35" src="https://github.com/user-attachments/assets/97506127-e836-4c1a-b929-c6b3abf340b3" />
 <img width="500" alt="2026-09-15_16-35_1" src="https://github.com/user-attachments/assets/89576d10-c01a-413b-881a-6f644708bad2" />
 
 ![Status](https://img.shields.io/badge/Status-Em_Andamento-yellow)
