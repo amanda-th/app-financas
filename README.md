@@ -1,9 +1,15 @@
 # Gestão Financeira Pessoal
 
-<p align="left">
-  <img src="https://img.shields.io/badge/Status-Em_Andamento-yellow?style=flat-square" alt="Status" />
-  <img src="https://img.shields.io/badge/Propósito-Uso_Pessoal-purple?style=flat-square" alt="Propósito" />
-  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="Licença" />
+<p align="center">
+  <img src="https://img.shields.io/badge/Status-Em_Andamento-feeac7?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/PWA-Pronto_para_Instalar-d88180?style=flat-square&logo=pwa&logoColor=white" alt="PWA" />
+  <img src="https://img.shields.io/badge/License-MIT-724319?style=flat-square" alt="Licença" />
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/JavaScript-ES6+-f7b1b0?style=flat-square&logo=javascript&logoColor=white" alt="JavaScript" />
+  <img src="https://img.shields.io/badge/Firebase-Realtime_DB-fdf5e6?style=flat-square&logo=firebase&logoColor=white" alt="Firebase" />
+  <img src="https://img.shields.io/badge/Chart.js-Visualização-2a9d8f?style=flat-square&logo=chartdotjs&logoColor=white" alt="Chart.js" />
 </p>
 
 Aplicação PWA (Progressive Web App) criada sob medida para substituir planilhas manuais no controle financeiro e no uso consciente do cartão de crédito. 
@@ -39,7 +45,7 @@ O app foca em agilidade para registrar despesas do dia a dia, mantendo os gastos
   </tr>
   <tr>
     <td width="55%" valign="center">
-      <h3>Dashboard & Análise Visual</h3>
+      <h3>Dashboard e Análise Visual</h3>
       <p>Gráficos interativos em rosca que mostram a distribuição de gastos por categoria em tempo real.</p>
       <p>Visualização clara das maiores fatias do orçamento do ciclo atual.</p>
     </td>
@@ -58,7 +64,7 @@ O app foca em agilidade para registrar despesas do dia a dia, mantendo os gastos
     </td>
   </tr>
     <td width="55%" valign="center">
-      <h3> Regras do Orçamento & Customização</h3>
+      <h3> Totalmente Personalizável</h3>
       <p>Controle total sobre as variáveis do seu mês: defina tetos de gastos, dia de fechamento do cartão, botões rápidos de despesa e temas visuais.</p>
       <p>Uma central pensada para que a ferramenta se adapte ao seu fluxo, e não o contrário.</p>
     </td>
