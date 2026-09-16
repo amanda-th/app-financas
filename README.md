@@ -1,41 +1,88 @@
 # Gestão Financeira Pessoal
 
-<img width="500" alt="2026-09-15_16-35_1" src="https://github.com/user-attachments/assets/89576d10-c01a-413b-881a-6f644708bad2" />
+<p align="left">
+  <img src="https://img.shields.io/badge/Status-Em_Andamento-yellow?style=flat-square" alt="Status" />
+  <img src="https://img.shields.io/badge/Propósito-Uso_Pessoal-purple?style=flat-square" alt="Propósito" />
+  <img src="https://img.shields.io/badge/License-MIT-green?style=flat-square" alt="Licença" />
+</p>
 
-![Status](https://img.shields.io/badge/Status-Em_Andamento-yellow)
-![Uso](https://img.shields.io/badge/Propósito-Uso_Pessoal-purple)
-![Licença](https://img.shields.io/badge/License-MIT-green)
+Aplicação PWA (Progressive Web App) criada sob medida para substituir planilhas manuais no controle financeiro e no uso consciente do cartão de crédito. 
 
-Aplicação desenvolvida para controle financeiro e orçamentário pessoal, com foco em simplicidade, agilidade no registro de despesas e visibilidade clara dos hábitos de consumo no cartão de crédito. 
-
-O objetivo do projeto foi criar uma ferramenta PWA (Progressive Web App) sob medida para substituir planilhas manuais. A aplicação ajuda a manter os gastos dentro de um limite pré-estabelecido, calculando o ritmo diário de compras (Pacing) até o fechamento da fatura e recompensando dias sem gastos.
+O app foca em agilidade para registrar despesas do dia a dia, mantendo os gastos dentro de um teto pré-definido por meio de um cálculo inteligente de ritmo diário (**Pacing**) e recompensando a consistência com ofensivas sem compras.
 
 ---
 
 ## Funcionalidades
 
-- **Inteligência de Orçamento Diário (Pacing):** Calcula automaticamente quanto você pode gastar por dia até o fechamento da fatura para não estourar o limite, além de contar a "ofensiva" (streak) de dias sem passar o cartão.
-- **Registro Rápido e Parcelamento:** Botões de *Quick Add* para locais frequentes (ex: Mercado, Farmácia) e suporte nativo ao registro de compras parceladas.
-- **Dashboard Visual:** Gráfico de rosca dinâmico para analisar imediatamente para onde o dinheiro está indo, separando tudo por categorias.
-- **Múltiplos Temas (Color Palettes):** Interface 100% customizável com 6 temas integrados (Sorvete, Peachy Glow, Summer, Ocean Pearl, Fresh e Cozy Earth) que alteram toda a UI e as cores do gráfico em tempo real.
-- **Filtros e Exportação:** Navegue facilmente por faturas de meses anteriores e exporte o histórico completo do ciclo atual para um arquivo `.csv` com apenas um clique.
-- **Armazenamento em Nuvem e Segurança:** Autenticação de usuário e sincronização de dados em tempo real protegida por regras de segurança.
+
+<table>
+  <tr>
+    <td width="55%" valign="center">
+      <h3>Ritmo Diário & Ofensiva (Pacing)</h3>
+      <p>Calcula dinamicamente o valor disponível para gastar por dia até o fechamento da fatura, evitando estouros no orçamento no final do mês.</p>
+      <p>Inclui contador de <em>streak</em> (dias sem passar o cartão) para incentivar o consumo consciente.</p>
+      <p>Histórico completo de faturas para consultas retroativas e exportação dos dados do ciclo em <code>.csv</code> com um clique.</p>
+    </td>
+    <td width="45%" align="center">
+      <img src="https://github.com/user-attachments/assets/92402cc9-0577-49a9-b418-65d45b93c4e0" height="360" />
+    </td>
+  </tr>
+  <tr>
+    <td width="55%" align="center">
+      <img src="https://github.com/user-attachments/assets/edee3aa6-27b7-4284-b004-94760972f543" height="360" />
+    </td>
+    <td width="45%" valign="center">
+      <h3>Registro Rápido & Parcelas</h3>
+      <p>Botões de <em>Quick Add</em> pensados para comércios de rotina (supermercado, farmácia, etc.) para registrar despesas em menos de 5 segundos.</p>
+      <p>Suporte completo a parcelamentos futuros com distribuição correta nas faturas.</p>
+    </td>
+  </tr>
+  <tr>
+    <td width="55%" valign="center">
+      <h3>Dashboard & Análise Visual</h3>
+      <p>Gráficos interativos em rosca que mostram a distribuição de gastos por categoria em tempo real.</p>
+      <p>Visualização clara das maiores fatias do orçamento do ciclo atual.</p>
+    </td>
+    <td width="45%" align="center">
+      <img src="https://github.com/user-attachments/assets/f77b5137-a2f1-4158-9e0d-87bacb3e3411" height="360" />
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" align="center">
+      <img width="300" src="https://github.com/user-attachments/assets/ebe5ad26-ecb6-4dfa-9167-9b25cd84309c" />
+    </td>
+    <td width="50%" valign="center">
+      <h3>Temas</h3>
+      <p>Interface personalizável com 6 paletas de cores prontas que modificam componentes, contrastes e os gráficos em tempo real:</p>
+      <em>Sorvete, Peachy Glow, Summer, Ocean Pearl, Fresh e Cozy Earth.</em>
+    </td>
+  </tr>
+    <td width="55%" valign="center">
+      <h3> Regras do Orçamento & Customização</h3>
+      <p>Controle total sobre as variáveis do seu mês: defina tetos de gastos, dia de fechamento do cartão, botões rápidos de despesa e temas visuais.</p>
+      <p>Uma central pensada para que a ferramenta se adapte ao seu fluxo, e não o contrário.</p>
+    </td>
+    <td width="45%" align="center">
+      <img src="https://github.com/user-attachments/assets/d824826d-e5cd-4191-b59c-e96bd3355589" height="360" />
+    </td>
+  </tr>
+</table>
+
 
 ---
 
-## Tecnologias Utilizadas
+## Tecnologias
 
-- **Frontend / Interface:** HTML5, CSS3, Vanilla JavaScript (ES6 Modules).
-- **Tipografia:** Google Fonts ([Fredoka](https://fonts.google.com/specimen/Fredoka) - para um visual mais arredondado, amigável e moderno).
-- **Backend / Armazenamento:** Firebase Realtime Database (Nuvem).
-- **Autenticação:** Firebase Auth (E-mail e Senha).
-- **Visualização de Dados:** Chart.js.
-- **Controle de Versão:** Git & GitHub.
+| Área | Tecnologias / Bibliotecas |
+| :--- | :--- |
+| **Interface** | HTML5, CSS3, JavaScript Vanilla (ES6 Modules) |
+| **Design & UI** | Google Fonts ([Fredoka](https://fonts.google.com/specimen/Fredoka)), Paletas via [Coolors](https://coolors.co/) |
+| **Visualização** | Chart.js |
+| **Nuvem & Auth** | Firebase Realtime Database, Firebase Authentication |
+| **Versão** | Git & GitHub |
 
 ---
 
-## Créditos de Design
+## Design
 
-A estética do aplicativo foi focada em um estilo minimalista, moderno e leve. 
-
-As paletas de cores maravilhosas utilizadas nos temas dinâmicos (como o *Cozy Earth* e o *Peachy Glow*) foram cuidadosamente selecionadas utilizando a ferramenta **[coolors.co](https://coolors.co/)**.
+O layout foi pensado para ser leve e visualmente confortável, fugindo do visual cinza e denso de planilhas tradicionais. As combinações cromáticas foram estruturadas para manter legibilidade e contraste mesmo na alternância dos 6 temas nativos.
