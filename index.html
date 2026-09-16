@@ -4,64 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
+    
+    <!-- Biblioteca de Gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- Biblioteca de Ícones (Phosphor Icons) -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <!-- Fontes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. Tema Ice Cream (Agora é o Padrão/Principal) */
+        /* 1. Tema Ice Cream (Padrão/Principal) */
         :root {
-            --bg-color: #feeac7; 
-            --surface-color: #fdf5e6; 
-            --primary-color: #d88180; 
-            --text-color: #724319; 
-            --border-color: #f7b1b0; 
+            --bg-color: #feeac7; --surface-color: #fdf5e6; 
+            --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
         }
-
         /* 2. Tema Peachy Glow */
         :root.theme-peachy-glow {
-            --bg-color: #472d30ff; 
-            --surface-color: #723d46ff; 
-            --primary-color: #e26d5cff; 
-            --text-color: #ffe1a8ff; 
-            --border-color: #c9cba3ff; 
+            --bg-color: #472d30ff; --surface-color: #723d46ff; 
+            --primary-color: #e26d5cff; --text-color: #ffe1a8ff; --border-color: #c9cba3ff; 
         }
-
         /* 3. Tema Summer Dream */
         :root.theme-summer-dream {
-            --bg-color: #fdfcdcff; 
-            --surface-color: #fed9b7ff; 
-            --primary-color: #f07167ff; 
-            --text-color: #0081a7ff; 
-            --border-color: #00afb9ff; 
+            --bg-color: #fdfcdcff; --surface-color: #fed9b7ff; 
+            --primary-color: #f07167ff; --text-color: #0081a7ff; --border-color: #00afb9ff; 
         }
-
         /* 4. Tema Ocean Pearl */
         :root.theme-ocean-pearl {
-            --bg-color: #edf6f9ff; 
-            --surface-color: #ffddd2ff; 
-            --primary-color: #e29578ff; 
-            --text-color: #006d77ff; 
-            --border-color: #83c5beff; 
+            --bg-color: #edf6f9ff; --surface-color: #ffddd2ff; 
+            --primary-color: #e29578ff; --text-color: #006d77ff; --border-color: #83c5beff; 
         }
-
         /* 5. Tema Fresh Greens */
         :root.theme-fresh-greens {
-            --bg-color: #2d4a22; 
-            --surface-color: #386641; 
-            --primary-color: #a7c957; 
-            --text-color: #f2e8cf; 
-            --border-color: #6a994e;
+            --bg-color: #2d4a22; --surface-color: #386641; 
+            --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
         }      
-
-        /* 6. Tema Cozy Earth (Agora é opcional) */
+        /* 6. Tema Cozy Earth */
         :root.theme-cozy-earth {
-            --bg-color: #d2d0baff; 
-            --surface-color: #e5c1bdff; 
-            --primary-color: #7b9e87ff; 
-            --text-color: #5e747fff; 
-            --border-color: #b6be9cff; 
+            --bg-color: #d2d0baff; --surface-color: #e5c1bdff; 
+            --primary-color: #7b9e87ff; --text-color: #5e747fff; --border-color: #b6be9cff; 
         }
 
         body {
@@ -79,12 +63,12 @@
         
         .header-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         
-        .btn-theme {
-            background: transparent; color: var(--text-color); border: 1px solid var(--border-color);
-            padding: 6px 14px; border-radius: 20px; font-family: 'Fredoka', sans-serif;
-            font-weight: 500; font-size: 0.85em; cursor: pointer; transition: all 0.2s;
+        .btn-icon {
+            background: transparent; color: var(--primary-color); border: none;
+            font-size: 1.8em; cursor: pointer; transition: transform 0.2s; padding: 0;
+            display: flex; align-items: center; justify-content: center;
         }
-        .btn-theme:hover { border-color: var(--primary-color); color: var(--primary-color); }
+        .btn-icon:hover { transform: scale(1.1); }
 
         h2 { margin-top: 0; color: var(--primary-color); font-weight: 600; letter-spacing: 0.5px; }
         h3 { font-weight: 600; }
@@ -102,12 +86,12 @@
         input[type="date"], input[type="month"] { color-scheme: light dark; }
         
         .quick-add-container { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 5px; }
-        
         .btn-quick {
             white-space: nowrap; padding: 6px 12px; font-size: 0.85em; font-weight: 500;
             background-color: transparent; color: var(--primary-color);
             border: 1px solid var(--primary-color); border-radius: 20px;
-            font-family: 'Fredoka', sans-serif; cursor: pointer; width: auto; margin: 0; transition: all 0.2s;
+            font-family: 'Fredoka', sans-serif; cursor: pointer; width: auto; margin: 0; 
+            transition: all 0.2s; display: flex; align-items: center; gap: 4px;
         }
         .btn-quick:hover { background-color: var(--primary-color); color: var(--bg-color); }
 
@@ -148,7 +132,8 @@
             height: 100%; width: 0%; background-color: var(--primary-color); transition: width 0.4s ease, background-color 0.4s ease;
         }
         
-        .chart-container { margin-top: 24px; margin-bottom: 20px; }
+        /* Gráfico invisível por padrão até ter dados */
+        .chart-container { margin-top: 24px; margin-bottom: 20px; display: none; }
         
         .ai-feedback {
             background-color: var(--bg-color); border-left: 4px solid var(--primary-color);
@@ -156,7 +141,11 @@
             line-height: 1.5; color: var(--text-color); margin-bottom: 24px;
         }
         .ai-feedback span.destaque { color: var(--primary-color); font-weight: 600; }
-        .ai-feedback .ofensiva { display: inline-block; background-color: var(--primary-color); color: var(--bg-color); padding: 4px 10px; border-radius: 12px; font-size: 0.9em; font-weight: 600; margin-top: 8px;}
+        .ai-feedback .ofensiva { 
+            display: inline-flex; align-items: center; gap: 6px;
+            background-color: var(--primary-color); color: var(--bg-color); 
+            padding: 4px 10px; border-radius: 12px; font-size: 0.9em; font-weight: 600; margin-top: 8px;
+        }
 
         .historico-container {
             background-color: var(--surface-color); padding: 16px; border-radius: 12px;
@@ -169,8 +158,32 @@
         th { font-weight: 500; opacity: 0.8; }
         
         .tag-parcela { font-size: 0.8em; background-color: var(--primary-color); color: var(--bg-color); padding: 2px 6px; border-radius: 6px; margin-left: 6px; font-weight: 600;}
-        .btn-delete { background-color: transparent !important; color: var(--border-color) !important; width: auto !important; padding: 5px !important; margin: 0 !important; font-size: 1.2em; border: none; cursor: pointer; }
+        .btn-delete { 
+            background-color: transparent !important; color: var(--border-color) !important; 
+            width: auto !important; padding: 5px !important; margin: 0 !important; 
+            font-size: 1.3em; border: none; cursor: pointer; display: flex; align-items: center;
+        }
         .btn-delete:hover { color: #cf6679 !important; }
+
+        /* Estilos do Modal de Configuração Atualizado */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center; z-index: 1000;
+            padding: 10px;
+        }
+        .modal-overlay.active { display: flex; }
+        
+        .modal-content {
+            background-color: var(--bg-color); /* Fundo invertido para destacar */
+            padding: 24px; border-radius: 12px;
+            width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; 
+            border: 2px solid var(--primary-color); /* Borda primária grossa */
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5); /* Sombra pesada */
+        }
+        
+        .modal-content h3 { margin-top: 0; color: var(--primary-color); font-size: 1.4em;}
+        .modal-content p { font-size: 0.9em; opacity: 0.8; margin-top: -10px; margin-bottom: 20px;}
+        .shortcut-group { display: flex; gap: 8px; margin-bottom: 10px; }
 
         @media (max-width: 480px) {
             body { padding: 10px; }
@@ -183,6 +196,78 @@
     </style>
 </head>
 <body>
+
+<!-- MODAL DE CONFIGURAÇÕES -->
+<div id="configModal" class="modal-overlay">
+    <div class="modal-content">
+        <h3 id="modalTitle">Configurações</h3>
+        <p id="modalSubtitle">Ajuste suas preferências e metas.</p>
+        
+        <form id="configForm">
+            <div class="form-group">
+                <label>Meta de Gastos do Ciclo (R$)</label>
+                <input type="number" id="configLimite" step="0.01" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Que dia você quer resetar esse ciclo? (1 a 31)</label>
+                <input type="number" id="configDia" min="1" max="31" required>
+            </div>
+
+            <div class="form-group">
+                <label>Paleta de Cores</label>
+                <select id="configTema">
+                    <option value="">Sorvete</option>
+                    <option value="theme-peachy-glow">Peachy Glow</option>
+                    <option value="theme-summer-dream">Summer Dream</option>
+                    <option value="theme-ocean-pearl">Ocean Pearl</option>
+                    <option value="theme-fresh-greens">Fresh Greens</option>
+                    <option value="theme-cozy-earth">Cozy Earth</option>
+                </select>
+            </div>
+
+            <hr style="border: 1px solid var(--border-color); margin: 20px 0;">
+            <h4 style="margin-top:0; margin-bottom:10px; color: var(--primary-color);">Acessos Rápidos</h4>
+            
+            <div class="shortcut-group">
+                <input type="text" id="shortcut0Name" placeholder="Nome" style="flex: 2;" required>
+                <select id="shortcut0Cat" style="flex: 1;">
+                    <option value="mercado">Mercado</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="alimentacao">Alimentação</option>
+                    <option value="saude">Saúde</option>
+                    <option value="lazer">Lazer</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+            <div class="shortcut-group">
+                <input type="text" id="shortcut1Name" placeholder="Nome" style="flex: 2;" required>
+                <select id="shortcut1Cat" style="flex: 1;">
+                    <option value="mercado">Mercado</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="alimentacao">Alimentação</option>
+                    <option value="saude">Saúde</option>
+                    <option value="lazer">Lazer</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+            <div class="shortcut-group">
+                <input type="text" id="shortcut2Name" placeholder="Nome" style="flex: 2;" required>
+                <select id="shortcut2Cat" style="flex: 1;">
+                    <option value="mercado">Mercado</option>
+                    <option value="transporte">Transporte</option>
+                    <option value="alimentacao">Alimentação</option>
+                    <option value="saude">Saúde</option>
+                    <option value="lazer">Lazer</option>
+                    <option value="outros">Outros</option>
+                </select>
+            </div>
+
+            <button type="submit" style="margin-bottom: 10px;">Salvar Preferências</button>
+            <button type="button" id="btnCloseModal" class="btn-quick" style="width: 100%; border: none; text-align: center; justify-content: center;">Cancelar / Fechar</button>
+        </form>
+    </div>
+</div>
 
 <div class="container" id="loginContainer">
     <h2>Login</h2>
@@ -197,16 +282,13 @@
     
     <div class="header-tools">
         <h2 style="margin: 0;">Finanças</h2>
-        <!-- O tema inicial agora é o Sorvete -->
-        <button id="btnTheme" class="btn-theme">🎨 Sorvete</button>
+        <button id="btnSettings" class="btn-icon" title="Configurações"><i class="ph ph-gear-six"></i></button>
     </div>
     
     <h3 style="font-size: 1.1em; color: var(--primary-color); margin-bottom: 8px; margin-top: 0;">Registrar Gasto</h3>
     
-    <div class="quick-add-container">
-        <button type="button" class="btn-quick" data-local="Stok Center" data-cat="mercado">Stok Center</button>
-        <button type="button" class="btn-quick" data-local="Paulinho" data-cat="mercado">Paulinho</button>
-        <button type="button" class="btn-quick" data-local="São João, Panvel, etc" data-cat="saude">Farmácia</button>
+    <div class="quick-add-container" id="containerAtalhos">
+        <!-- Preenchido via JS -->
     </div>
 
     <form id="financeForm" style="margin-bottom: 24px;">
@@ -229,10 +311,10 @@
             <label>Categoria</label>
             <select id="categoria" required>
                 <option value="mercado">Mercado</option>
-                <option value="transporte">Transporte (Uber, Ônibus)</option>
+                <option value="transporte">Transporte</option>
                 <option value="alimentacao">Alimentação fora</option>
                 <option value="saude">Saúde/Beleza</option>
-                <option value="lazer">Lazer (Assinaturas, Saídas)</option>
+                <option value="lazer">Lazer/Assinaturas</option>
                 <option value="outros">Outros</option>
             </select>
         </div>
@@ -266,16 +348,17 @@
                 <span>Fatura:</span>
                 <input type="month" id="filtroMes" class="input-mes">
             </div>
-            <span id="valorTotal" class="valor-total">R$ 0,00 / R$ 800,00</span>
+            <span id="valorTotal" class="valor-total">R$ 0,00 / R$ 0,00</span>
         </div>
         <div class="progress-bg">
             <div class="progress-fill" id="barraProgresso"></div>
         </div>
     </div>
     
-    <div class="chart-container">
+    <div class="chart-container" id="chartContainer">
         <canvas id="meuGrafico"></canvas>
     </div>
+    
     <div class="ai-feedback" id="aiFeedback">
         Carregando análise...
     </div>
@@ -283,7 +366,9 @@
     <div class="historico-container">
         <div class="historico-header">
             <h3>Histórico deste ciclo</h3>
-            <button id="btnExportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color);">⬇️ CSV</button>
+            <button id="btnExportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color);">
+                <i class="ph ph-download-simple"></i> CSV
+            </button>
         </div>
         <table>
             <thead>
@@ -326,18 +411,29 @@
     const corpoTabela = document.getElementById('corpoTabela');
     const filtroMes = document.getElementById('filtroMes');
     const inputDataGasto = document.getElementById('dataGasto');
+    const chartContainer = document.getElementById('chartContainer');
     
     appContainer.style.display = 'none';
-    const LIMITE_FATURA = 800.00;
     
     let graficoInstancia = null;
     let listenerAtual = null;
     let dadosAtuaisCSV = null; 
+    let globalUid = null;
+
+    let userConfig = {
+        limite: 800.00,
+        diaFechamento: 1,
+        tema: '', // Ice Cream
+        atalhos: [
+            { nome: 'Mercado', cat: 'mercado' },
+            { nome: 'Transporte', cat: 'transporte' },
+            { nome: 'Farmácia', cat: 'saude' }
+        ]
+    };
 
     inputDataGasto.value = new Date().toISOString().split('T')[0];
     Chart.defaults.font.family = "'Fredoka', sans-serif";
 
-    // --- CORES DINÂMICAS E CONTRASTANTES DO GRÁFICO POR TEMA ---
     const getChartColors = () => {
         const theme = document.documentElement.className;
         if (theme === 'theme-peachy-glow') return ['#e26d5c', '#c9cba3', '#ffe1a8', '#f4a261', '#e5989b', '#2a9d8f'];
@@ -345,46 +441,113 @@
         if (theme === 'theme-ocean-pearl') return ['#e29578', '#83c5be', '#006d77', '#d62828', '#f4a261', '#a5a58d'];
         if (theme === 'theme-fresh-greens') return ['#f4a261', '#2a9d8f', '#e9c46a', '#e76f51', '#264653', '#8ab17d'];
         if (theme === 'theme-cozy-earth') return ['#7b9e87', '#5e747f', '#b6be9c', '#e26d5c', '#e9c46a', '#9ca89e'];
-        
-        // Tema Ice Cream (Padrão) - Cores brilhantes garantidas de não sumir no fundo creme
         return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180']; 
     };
 
-    // --- LÓGICA DE TEMAS ATUALIZADA (Ordem alterada) ---
-    const temasClasses = ['', 'theme-peachy-glow', 'theme-summer-dream', 'theme-ocean-pearl', 'theme-fresh-greens', 'theme-cozy-earth'];
-    const temasNomes = ['🎨 Sorvete', '🎨 Peachy Glow', '🎨 Summer', '🎨 Ocean Pearl', '🎨 Fresh', '🎨 Cozy Earth'];
-    let temaAtualIndex = 0;
-    const btnTheme = document.getElementById('btnTheme');
+    // --- GERENCIAMENTO DE MODAL ---
+    const configModal = document.getElementById('configModal');
 
-    btnTheme.addEventListener('click', () => {
-        temaAtualIndex = (temaAtualIndex + 1) % temasClasses.length;
-        document.documentElement.className = temasClasses[temaAtualIndex];
-        btnTheme.innerText = temasNomes[temaAtualIndex];
+    function abrirModalConfig(isFirstTime = false) {
+        if (isFirstTime) {
+            document.getElementById('modalTitle').innerText = "Mais um ciclo!";
+            document.getElementById('modalSubtitle').innerText = "Qual sua meta de gastos esse mês?\n(Não se preocupe, você poderá alterar isso depois se necessário)";
+            document.getElementById('btnCloseModal').style.display = 'none';
+        } else {
+            document.getElementById('modalTitle').innerText = "Configurações";
+            document.getElementById('modalSubtitle').innerText = "Ajuste suas metas e o visual do app.";
+            document.getElementById('btnCloseModal').style.display = 'flex';
+        }
+
+        document.getElementById('configLimite').value = userConfig.limite;
+        document.getElementById('configDia').value = userConfig.diaFechamento;
+        document.getElementById('configTema').value = userConfig.tema;
         
+        for(let i=0; i<3; i++) {
+            if(userConfig.atalhos[i]) {
+                document.getElementById(`shortcut${i}Name`).value = userConfig.atalhos[i].nome;
+                document.getElementById(`shortcut${i}Cat`).value = userConfig.atalhos[i].cat;
+            }
+        }
+        configModal.classList.add('active');
+    }
+
+    document.getElementById('btnCloseModal').addEventListener('click', () => {
+        configModal.classList.remove('active');
+    });
+    
+    // Fechar ao clicar fora do modal
+    configModal.addEventListener('click', (e) => {
+        if (e.target === configModal && document.getElementById('btnCloseModal').style.display !== 'none') {
+            configModal.classList.remove('active');
+        }
+    });
+
+    document.getElementById('configForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const novaConfig = {
+            limite: parseFloat(document.getElementById('configLimite').value),
+            diaFechamento: parseInt(document.getElementById('configDia').value, 10),
+            tema: document.getElementById('configTema').value,
+            atalhos: [
+                { nome: document.getElementById('shortcut0Name').value.trim(), cat: document.getElementById('shortcut0Cat').value },
+                { nome: document.getElementById('shortcut1Name').value.trim(), cat: document.getElementById('shortcut1Cat').value },
+                { nome: document.getElementById('shortcut2Name').value.trim(), cat: document.getElementById('shortcut2Cat').value }
+            ]
+        };
+
+        await set(ref(db, `financas/${globalUid}/config`), novaConfig);
+        configModal.classList.remove('active');
+    });
+
+    document.getElementById('btnSettings').addEventListener('click', () => abrirModalConfig(false));
+
+    function aplicarConfiguracoesNaTela() {
+        document.documentElement.className = userConfig.tema;
+        
+        const containerAtalhos = document.getElementById('containerAtalhos');
+        containerAtalhos.innerHTML = '';
+        userConfig.atalhos.forEach(atalho => {
+            if (atalho.nome) {
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'btn-quick';
+                btn.innerHTML = `<i class="ph ph-lightning"></i> ${atalho.nome}`;
+                btn.addEventListener('click', () => {
+                    document.getElementById('local').value = atalho.nome;
+                    document.getElementById('categoria').value = atalho.cat;
+                    document.getElementById('valor').focus();
+                });
+                containerAtalhos.appendChild(btn);
+            }
+        });
+
         if (graficoInstancia) {
             graficoInstancia.data.datasets[0].backgroundColor = getChartColors();
             graficoInstancia.options.plugins.legend.labels.color = getComputedStyle(document.body).getPropertyValue('--text-color').trim();
             graficoInstancia.update();
         }
-    });
-
-    document.querySelectorAll('.btn-quick').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-            document.getElementById('local').value = e.target.getAttribute('data-local');
-            document.getElementById('categoria').value = e.target.getAttribute('data-cat');
-            document.getElementById('valor').focus(); 
-        });
-    });
+    }
 
     function obterMesFaturaAtual() {
         const data = new Date();
-        if (data.getDate() > 9) {
+        if (data.getDate() > userConfig.diaFechamento) {
             data.setMonth(data.getMonth() + 1);
         }
         return data.toISOString().slice(0, 7); 
     }
 
     function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos) {
+        const aiBox = document.getElementById('aiFeedback');
+        
+        // Esconde o gráfico se não tiver gasto
+        if (totalGasto === 0) {
+            aiBox.innerHTML = "Fatura sem lançamentos. Ótimo momento para planejar os próximos passos.";
+            chartContainer.style.display = 'none';
+            return;
+        }
+
+        chartContainer.style.display = 'block';
+
         const labels = Object.keys(dadosCategorias);
         const valores = Object.values(dadosCategorias);
         
@@ -395,45 +558,33 @@
             type: 'doughnut',
             data: {
                 labels: labels.map(l => l.charAt(0).toUpperCase() + l.slice(1)),
-                datasets: [{
-                    data: valores, backgroundColor: getChartColors(), borderWidth: 0, hoverOffset: 4
-                }]
+                datasets: [{ data: valores, backgroundColor: getChartColors(), borderWidth: 0, hoverOffset: 4 }]
             },
             options: { plugins: { legend: { labels: { color: getComputedStyle(document.body).getPropertyValue('--text-color').trim(), font: {family: "'Fredoka', sans-serif"} } } } }
         });
 
-        const aiBox = document.getElementById('aiFeedback');
-        
-        if (totalGasto === 0) {
-            aiBox.innerHTML = "Fatura sem lançamentos. Ótimo momento para planejar os próximos passos.";
-            return;
-        }
-
         let maiorCategoria = labels[0];
         let maiorValor = valores[0];
         for (let i = 1; i < labels.length; i++) {
-            if (valores[i] > maiorValor) {
-                maiorValor = valores[i];
-                maiorCategoria = labels[i];
-            }
+            if (valores[i] > maiorValor) { maiorValor = valores[i]; maiorCategoria = labels[i]; }
         }
 
-        const porcentagemTotal = ((totalGasto / LIMITE_FATURA) * 100).toFixed(0);
-        let dica = `Consumo: <span class="destaque">${porcentagemTotal}%</span> do limite de R$ 800. `;
+        const porcentagemTotal = ((totalGasto / userConfig.limite) * 100).toFixed(0);
+        let dica = `Consumo: <span class="destaque">${porcentagemTotal}%</span> da meta de R$ ${userConfig.limite.toFixed(2)}. `;
 
         const mesAtualReal = obterMesFaturaAtual();
         
         if (mesDesejado === mesAtualReal) {
             const agora = new Date();
-            let dataFechamento = new Date(agora.getFullYear(), agora.getMonth(), 9);
-            if (agora.getDate() > 9) { dataFechamento.setMonth(dataFechamento.getMonth() + 1); }
+            let dataFechamento = new Date(agora.getFullYear(), agora.getMonth(), userConfig.diaFechamento);
+            if (agora.getDate() > userConfig.diaFechamento) { dataFechamento.setMonth(dataFechamento.getMonth() + 1); }
             
             const diasRestantes = Math.ceil((dataFechamento - agora) / (1000 * 60 * 60 * 24));
-            const saldoDisponivel = LIMITE_FATURA - totalGasto;
+            const saldoDisponivel = userConfig.limite - totalGasto;
 
             if (saldoDisponivel > 0 && diasRestantes > 0) {
                 const mediaDiaria = saldoDisponivel / diasRestantes;
-                dica += `<br><br>⏳ <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
+                dica += `<br><br><i class="ph-fill ph-hourglass-high"></i> <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
                 
                 if (listaGastos && listaGastos.length > 0) {
                     const ultimoGastoObj = new Date(listaGastos[0].data);
@@ -445,29 +596,28 @@
                     
                     if (diasSemGastar > 0) {
                         const valorAcumulado = mediaDiaria * diasSemGastar;
-                        dica += `<br><span class="ofensiva">🔥 ${diasSemGastar} dia(s) sem passar o cartão! Você pode gastar R$ ${valorAcumulado.toFixed(2)} hoje!</span>`;
+                        dica += `<br><span class="ofensiva"><i class="ph-fill ph-fire"></i> ${diasSemGastar} dia(s) sem passar o cartão! Você pode gastar R$ ${valorAcumulado.toFixed(2)} hoje!</span>`;
                     }
                 }
             } else if (saldoDisponivel <= 0) {
-                dica += `<br><br>⏳ <b>Alerta:</b> O limite esgotou! Congele o cartão até o dia 9.`;
+                dica += `<br><br><i class="ph-fill ph-warning-circle" style="color: #cf6679;"></i> <b>Alerta:</b> O limite esgotou! Congele o cartão até o fechamento.`;
             }
         } else {
-            dica += "<br><br>🕒 <i>Exibindo histórico de um ciclo passado.</i>";
+            dica += `<br><br><i class="ph-fill ph-clock-counter-clockwise"></i> <i>Exibindo histórico de um ciclo passado.</i>`;
         }
 
         if (maiorCategoria === 'mercado') {
-            dica += `<br><br>🛒 O maior gasto foi com <span class="destaque">MERCADO</span> (R$ ${maiorValor.toFixed(2)}).`;
+            dica += `<br><br><i class="ph-fill ph-shopping-cart"></i> O maior gasto foi com <span class="destaque">MERCADO</span> (R$ ${maiorValor.toFixed(2)}).`;
         } else {
-            dica += `<br><br>🔎 O maior ralo financeiro deste ciclo foi <span class="destaque">${maiorCategoria.toUpperCase()}</span> (R$ ${maiorValor.toFixed(2)}).`;
+            dica += `<br><br><i class="ph-fill ph-magnifying-glass"></i> O maior ralo financeiro deste ciclo foi <span class="destaque">${maiorCategoria.toUpperCase()}</span> (R$ ${maiorValor.toFixed(2)}).`;
         }
-
         aiBox.innerHTML = dica;
     }
 
     function carregarDashboard(mesDesejado) {
         if (listenerAtual) { off(listenerAtual); }
         
-        listenerAtual = ref(db, `financas/faturas/${mesDesejado}`);
+        listenerAtual = ref(db, `financas/${globalUid}/faturas/${mesDesejado}`);
 
         onValue(listenerAtual, (snapshot) => {
             let totalGasto = 0;
@@ -502,7 +652,9 @@
                         <td>${gasto.local} ${textoParcela}<br><small style="opacity: 0.6;">${gasto.categoria.toUpperCase()}</small></td>
                         <td style="text-align: right; font-weight: bold;">R$ ${gasto.valor.toFixed(2)}</td>
                         <td style="text-align: center;">
-                            <button class="btn-delete" data-id="${gasto.id}" data-mes="${mesDesejado}">🗑️</button>
+                            <button class="btn-delete" data-id="${gasto.id}" data-mes="${mesDesejado}">
+                                <i class="ph ph-trash"></i>
+                            </button>
                         </td>
                     `;
                     corpoTabela.appendChild(tr);
@@ -511,51 +663,38 @@
                 corpoTabela.innerHTML = '<tr><td colspan="4" style="text-align: center; padding: 20px; opacity: 0.6;">Nenhum gasto neste ciclo.</td></tr>';
             }
 
-            let porcentagem = (totalGasto / LIMITE_FATURA) * 100;
+            let porcentagem = (totalGasto / userConfig.limite) * 100;
             if (porcentagem > 100) porcentagem = 100;
 
-            document.getElementById('valorTotal').innerText = `R$ ${totalGasto.toFixed(2)} / R$ ${LIMITE_FATURA.toFixed(2)}`;
+            document.getElementById('valorTotal').innerText = `R$ ${totalGasto.toFixed(2)} / R$ ${userConfig.limite.toFixed(2)}`;
             const barra = document.getElementById('barraProgresso');
             barra.style.width = `${porcentagem}%`;
-
-            if (porcentagem >= 100) {
-                barra.style.backgroundColor = '#cf6679'; 
-            } else {
-                barra.style.backgroundColor = 'var(--primary-color)';
-            }
+            barra.style.backgroundColor = porcentagem >= 100 ? '#cf6679' : 'var(--primary-color)';
             
             gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos);
         });
     }
 
     document.getElementById('btnExportar').addEventListener('click', () => {
-        if (!dadosAtuaisCSV) {
-            alert("Não há dados registrados neste mês para exportar.");
-            return;
-        }
+        if (!dadosAtuaisCSV) { alert("Não há dados registrados neste mês para exportar."); return; }
 
         const listaGastos = Object.keys(dadosAtuaisCSV).map(key => {
             return { id: key, ...dadosAtuaisCSV[key] };
         }).sort((a, b) => new Date(a.data) - new Date(b.data)); 
 
         let csvContent = "Data,Local,Categoria,Valor,Parcela\n";
-
         listaGastos.forEach(g => {
             const dataSplited = g.data.split('T')[0].split('-');
             const dataFormatada = `${dataSplited[2]}/${dataSplited[1]}/${dataSplited[0]}`;
-
             const parcela = g.parcelado ? `${g.parcelaAtual}/${g.parcelaTotal}` : "Nao";
             const localTratado = `"${g.local.replace(/"/g, '""')}"`;
-
             csvContent += `${dataFormatada},${localTratado},${g.categoria},${g.valor.toFixed(2)},${parcela}\n`;
         });
 
         const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
         const link = document.createElement("a");
-        const url = URL.createObjectURL(blob);
-        link.setAttribute("href", url);
-        link.setAttribute("download", `fatura_${filtroMes.value}.csv`);
-        link.style.visibility = 'hidden';
+        link.href = URL.createObjectURL(blob);
+        link.download = `fatura_${filtroMes.value}.csv`;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -563,12 +702,28 @@
 
     onAuthStateChanged(auth, (user) => {
         if (user) {
+            globalUid = user.uid; 
             loginContainer.style.display = 'none';
             appContainer.style.display = 'block';
             
-            const mesInicial = obterMesFaturaAtual();
-            filtroMes.value = mesInicial;
-            carregarDashboard(mesInicial);
+            onValue(ref(db, `financas/${globalUid}/config`), (snap) => {
+                let isFirstTime = false;
+                if (snap.exists()) {
+                    userConfig = snap.val();
+                } else {
+                    isFirstTime = true; 
+                }
+
+                aplicarConfiguracoesNaTela();
+
+                if (isFirstTime) {
+                    abrirModalConfig(true);
+                }
+
+                const mesInicial = obterMesFaturaAtual();
+                if (!filtroMes.value) { filtroMes.value = mesInicial; }
+                carregarDashboard(filtroMes.value);
+            });
         } else {
             loginContainer.style.display = 'block';
             appContainer.style.display = 'none';
@@ -579,10 +734,9 @@
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        const email = document.getElementById('email').value;
-        const senha = document.getElementById('senha').value;
-        try { await signInWithEmailAndPassword(auth, email, senha); } 
-        catch (error) { alert("Erro ao fazer login: " + error.message); }
+        try { 
+            await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('senha').value); 
+        } catch (error) { alert("Erro ao fazer login: Verifique e-mail e senha."); }
     });
 
     document.getElementById('isParcelado').addEventListener('change', (e) => {
@@ -596,7 +750,6 @@
         btnSubmit.innerText = "Salvando...";
 
         const isParcelado = document.getElementById('isParcelado').checked;
-        
         const dataSelecionada = document.getElementById('dataGasto').value; 
         const horaFixa = new Date().toISOString().split('T')[1];
         
@@ -612,8 +765,7 @@
 
         try {
             const mesReal = obterMesFaturaAtual(); 
-            const faturaRef = ref(db, `financas/faturas/${mesReal}`);
-            await set(push(faturaRef), novoGasto);
+            await set(push(ref(db, `financas/${globalUid}/faturas/${mesReal}`)), novoGasto);
 
             financeForm.reset();
             inputDataGasto.value = new Date().toISOString().split('T')[0];
@@ -624,7 +776,7 @@
                 carregarDashboard(mesReal);
             }
         } catch (erro) {
-            alert("Erro ao salvar.");
+            alert("Erro ao salvar. Verifique se as regras do Firebase foram atualizadas.");
         } finally {
             btnSubmit.disabled = false;
             btnSubmit.innerText = "Registrar";
@@ -634,10 +786,8 @@
     corpoTabela.addEventListener('click', async (e) => {
         const btnDelete = e.target.closest('.btn-delete');
         if (btnDelete && confirm("Tem certeza que deseja apagar este gasto?")) {
-            const idGasto = btnDelete.getAttribute('data-id');
-            const mesGasto = btnDelete.getAttribute('data-mes');
             try {
-                await remove(ref(db, `financas/faturas/${mesGasto}/${idGasto}`));
+                await remove(ref(db, `financas/${globalUid}/faturas/${btnDelete.getAttribute('data-mes')}/${btnDelete.getAttribute('data-id')}`));
             } catch (error) { alert("Erro ao excluir."); }
         }
     });
