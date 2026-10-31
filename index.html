@@ -484,7 +484,6 @@
             }
         }
         
-        // Atualiza a visualização do mês na zona de perigo
         document.getElementById('spanMesReset').innerText = filtroMes.value || "este mês";
 
         configModal.classList.add('active');
@@ -514,7 +513,6 @@
         configModal.classList.remove('active');
     });
 
-    // Função de Reset do Mês Selecionado
     document.getElementById('btnResetMonth').addEventListener('click', async () => {
         const mesAtual = filtroMes.value;
         if (!mesAtual) return;
@@ -565,12 +563,22 @@
         }
     }
 
+    // NOVA REGRA DE NOMENCLATURA: O mês do ciclo é o mês em que a fatura ABRE
     function obterMesFaturaParaData(dataIsoString) {
-        const d = new Date(dataIsoString);
-        if (d.getDate() > userConfig.diaFechamento) {
-            d.setMonth(d.getMonth() + 1);
+        const partes = dataIsoString.split('T')[0].split('-');
+        let ano = parseInt(partes[0], 10);
+        let mes = parseInt(partes[1], 10);
+        let dia = parseInt(partes[2], 10);
+
+        if (dia <= userConfig.diaFechamento) {
+            mes = mes - 1;
+            if (mes === 0) {
+                mes = 12;
+                ano = ano - 1;
+            }
         }
-        return d.toISOString().slice(0, 7); 
+        
+        return `${ano}-${String(mes).padStart(2, '0')}`;
     }
 
     function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos) {
