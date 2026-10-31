@@ -150,7 +150,7 @@
             background-color: var(--surface-color); padding: 16px; border-radius: 12px;
             border: 1px solid var(--border-color); overflow-x: auto;
         }
-        .historico-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .historico-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
         .historico-header h3 { margin: 0; font-size: 1.1em; color: var(--primary-color); }
         table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
         th, td { text-align: left; padding: 12px 4px; border-bottom: 1px solid var(--border-color); }
@@ -190,6 +190,7 @@
             .bloco-fatura { width: 100%; justify-content: space-between; }
             .valor-total { align-self: flex-start; font-size: 1.2em; }
             .input-mes { max-width: 100%; }
+            .historico-header { flex-direction: column; align-items: flex-start;}
         }
     </style>
 </head>
@@ -364,9 +365,18 @@
     <div class="historico-container">
         <div class="historico-header">
             <h3>Histórico deste ciclo</h3>
-            <button id="btnExportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color);">
-                <i class="ph ph-download-simple"></i> CSV
-            </button>
+            
+            <div style="display: flex; gap: 8px;">
+                <input type="file" id="inputImportCSV" accept=".csv" style="display: none;">
+                
+                <button id="btnImportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color); margin: 0; padding: 4px 10px;">
+                    <i class="ph ph-upload-simple"></i> Importar
+                </button>
+                
+                <button id="btnExportar" class="btn-quick" style="border-color: var(--text-color); color: var(--text-color); margin: 0; padding: 4px 10px;">
+                    <i class="ph ph-download-simple"></i> Exportar
+                </button>
+            </div>
         </div>
         <table>
             <thead>
@@ -442,7 +452,6 @@
         return ['#ff9aa2', '#a0c4ff', '#ffd166', '#80ed99', '#724319', '#d88180']; 
     };
 
-    // --- GERENCIAMENTO DE MODAL ---
     const configModal = document.getElementById('configModal');
 
     function abrirModalConfig(isFirstTime = false) {
@@ -469,11 +478,7 @@
         configModal.classList.add('active');
     }
 
-    document.getElementById('btnCloseModal').addEventListener('click', () => {
-        configModal.classList.remove('active');
-    });
-    
-    // Fechar ao clicar fora do modal
+    document.getElementById('btnCloseModal').addEventListener('click', () => { configModal.classList.remove('active'); });
     configModal.addEventListener('click', (e) => {
         if (e.target === configModal && document.getElementById('btnCloseModal').style.display !== 'none') {
             configModal.classList.remove('active');
@@ -526,12 +531,12 @@
         }
     }
 
-    function obterMesFaturaAtual() {
-        const data = new Date();
-        if (data.getDate() > userConfig.diaFechamento) {
-            data.setMonth(data.getMonth() + 1);
+    function obterMesFaturaParaData(dataIsoString) {
+        const d = new Date(dataIsoString);
+        if (d.getDate() > userConfig.diaFechamento) {
+            d.setMonth(d.getMonth() + 1);
         }
-        return data.toISOString().slice(0, 7); 
+        return d.toISOString().slice(0, 7); 
     }
 
     function gerarAnaliseInteligente(dadosCategorias, totalGasto, mesDesejado, listaGastos) {
@@ -569,7 +574,9 @@
         const porcentagemTotal = ((totalGasto / userConfig.limite) * 100).toFixed(0);
         let dica = `Consumo: <span class="destaque">${porcentagemTotal}%</span> da meta de R$ ${userConfig.limite.toFixed(2)}. `;
 
-        const mesAtualReal = obterMesFaturaAtual();
+        // Usamos a mesma lógica de faturas para o mes atual
+        const dataHojeIso = new Date().toISOString();
+        const mesAtualReal = obterMesFaturaParaData(dataHojeIso);
         
         if (mesDesejado === mesAtualReal) {
             const agora = new Date();
@@ -584,7 +591,6 @@
                 dica += `<br><br><i class="ph-fill ph-hourglass-high"></i> <b>Ritmo ideal:</b> Faltam ${diasRestantes} dias para virar a fatura. Limite seguro: <b>R$ ${mediaDiaria.toFixed(2)}</b>/dia.`;
                 
                 if (listaGastos && listaGastos.length > 0) {
-                    // Pega exatamente a string da data para evitar bug de fuso horário na leitura
                     const dataUltimoGastoStr = listaGastos[0].data.split('T')[0];
                     const [anoUlt, mesUlt, diaUlt] = dataUltimoGastoStr.split('-');
                     
@@ -703,6 +709,77 @@
         document.body.removeChild(link);
     });
 
+    const inputImportCSV = document.getElementById('inputImportCSV');
+    document.getElementById('btnImportar').addEventListener('click', () => { inputImportCSV.click(); });
+
+    inputImportCSV.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+            const text = event.target.result;
+            const lines = text.split('\n').filter(line => line.trim() !== '');
+            if (lines.length <= 1) { alert("O arquivo CSV está vazio ou inválido."); return; }
+
+            const mesDestino = filtroMes.value;
+            if (!confirm(`Deseja importar ${lines.length - 1} gasto(s) para o ciclo de ${mesDestino}?`)) {
+                inputImportCSV.value = '';
+                return;
+            }
+
+            const faturaRef = ref(db, `financas/${globalUid}/faturas/${mesDestino}`);
+            let importCount = 0;
+
+            function parseCSVRow(str) {
+                const result = [];
+                let curVal = '';
+                let inQuotes = false;
+                for (let i = 0; i < str.length; i++) {
+                    let char = str[i];
+                    if (char === '"') {
+                        if (inQuotes && str[i+1] === '"') { curVal += '"'; i++; } 
+                        else { inQuotes = !inQuotes; }
+                    } else if (char === ',' && !inQuotes) { result.push(curVal); curVal = ''; } 
+                    else { curVal += char; }
+                }
+                result.push(curVal);
+                return result;
+            }
+
+            try {
+                for (let i = 1; i < lines.length; i++) {
+                    const cols = parseCSVRow(lines[i].trim());
+                    if (cols.length >= 4) {
+                        const [dataCsv, localCsv, categoriaCsv, valorCsv, parcelaCsv] = cols;
+                        const [d, m, y] = dataCsv.split('/');
+                        const dataFormatada = `${y}-${m}-${d}T12:00:00`;
+
+                        const isParcelado = parcelaCsv !== "Nao" && parcelaCsv !== undefined && parcelaCsv.includes("/");
+                        let pAtual = 1, pTotal = 1;
+                        if (isParcelado) {
+                            const partes = parcelaCsv.split('/');
+                            pAtual = parseInt(partes[0], 10);
+                            pTotal = parseInt(partes[1], 10);
+                        }
+
+                        const novoGasto = {
+                            data: dataFormatada, local: localCsv, categoria: categoriaCsv,
+                            valor: parseFloat(valorCsv), parcelado: isParcelado,
+                            parcelaAtual: pAtual, parcelaTotal: pTotal
+                        };
+                        await set(push(faturaRef), novoGasto);
+                        importCount++;
+                    }
+                }
+                alert(`${importCount} gasto(s) importado(s) com sucesso para o mês de ${mesDestino}!`);
+            } catch (error) {
+                alert("Erro ao importar alguns dados. Verifique o formato do arquivo.");
+            } finally { inputImportCSV.value = ''; }
+        };
+        reader.readAsText(file);
+    });
+
     onAuthStateChanged(auth, (user) => {
         if (user) {
             globalUid = user.uid; 
@@ -713,17 +790,13 @@
                 let isFirstTime = false;
                 if (snap.exists()) {
                     userConfig = snap.val();
-                } else {
-                    isFirstTime = true; 
-                }
+                } else { isFirstTime = true; }
 
                 aplicarConfiguracoesNaTela();
+                if (isFirstTime) abrirModalConfig(true);
 
-                if (isFirstTime) {
-                    abrirModalConfig(true);
-                }
-
-                const mesInicial = obterMesFaturaAtual();
+                const dataHojeIso = new Date().toISOString();
+                const mesInicial = obterMesFaturaParaData(dataHojeIso);
                 if (!filtroMes.value) { filtroMes.value = mesInicial; }
                 carregarDashboard(filtroMes.value);
             });
@@ -737,9 +810,8 @@
 
     document.getElementById('loginForm').addEventListener('submit', async (e) => {
         e.preventDefault();
-        try { 
-            await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('senha').value); 
-        } catch (error) { alert("Erro ao fazer login: Verifique e-mail e senha."); }
+        try { await signInWithEmailAndPassword(auth, document.getElementById('email').value, document.getElementById('senha').value); } 
+        catch (error) { alert("Erro ao fazer login: Verifique e-mail e senha."); }
     });
 
     document.getElementById('isParcelado').addEventListener('change', (e) => {
@@ -750,39 +822,63 @@
         e.preventDefault();
         const btnSubmit = financeForm.querySelector('button[type="submit"]');
         btnSubmit.disabled = true;
-        btnSubmit.innerText = "Salvando...";
+        btnSubmit.innerText = "Calculando parcelas...";
 
         const isParcelado = document.getElementById('isParcelado').checked;
+        const pAtual = isParcelado ? parseInt(document.getElementById('parcelaAtual').value, 10) : 1;
+        const pTotal = isParcelado ? parseInt(document.getElementById('parcelaTotal').value, 10) : 1;
+        
         const dataSelecionada = document.getElementById('dataGasto').value; 
         
-        // Em vez do toISOString, monta a hora manualmente ignorando fuso
         const agora = new Date();
         const horaLocal = String(agora.getHours()).padStart(2, '0') + ':' + 
                           String(agora.getMinutes()).padStart(2, '0') + ':' + 
                           String(agora.getSeconds()).padStart(2, '0');
         
-        const novoGasto = {
-            valor: parseFloat(document.getElementById('valor').value),
-            local: document.getElementById('local').value.trim(),
-            categoria: document.getElementById('categoria').value,
-            data: `${dataSelecionada}T${horaLocal}`, // String perfeita e livre de fuso-horário
-            parcelado: isParcelado,
-            parcelaAtual: isParcelado ? parseInt(document.getElementById('parcelaAtual').value, 10) : 1,
-            parcelaTotal: isParcelado ? parseInt(document.getElementById('parcelaTotal').value, 10) : 1
-        };
+        let parcelasSalvas = 0;
+        let totalIteracoes = isParcelado ? (pTotal - pAtual + 1) : 1;
 
         try {
-            const mesReal = obterMesFaturaAtual(); 
-            await set(push(ref(db, `financas/${globalUid}/faturas/${mesReal}`)), novoGasto);
+            // Loop para salvar automaticamente todas as parcelas restantes para o futuro
+            for (let i = 0; i < totalIteracoes; i++) {
+                
+                // Pega a data base e adiciona meses equivalentes à parcela
+                let dataInst = new Date(dataSelecionada + 'T12:00:00');
+                dataInst.setMonth(dataInst.getMonth() + i);
+                
+                let anoInst = dataInst.getFullYear();
+                let mesInst = String(dataInst.getMonth() + 1).padStart(2, '0');
+                let diaInst = String(dataInst.getDate()).padStart(2, '0');
+                let dataFinalString = `${anoInst}-${mesInst}-${diaInst}T${horaLocal}`;
+                
+                // Descobre em qual fatura essa data futura vai cair
+                let faturaMesStr = obterMesFaturaParaData(dataFinalString);
+
+                const novoGasto = {
+                    valor: parseFloat(document.getElementById('valor').value),
+                    local: document.getElementById('local').value.trim(),
+                    categoria: document.getElementById('categoria').value,
+                    data: dataFinalString, 
+                    parcelado: isParcelado,
+                    parcelaAtual: pAtual + i,
+                    parcelaTotal: pTotal
+                };
+
+                await set(push(ref(db, `financas/${globalUid}/faturas/${faturaMesStr}`)), novoGasto);
+                parcelasSalvas++;
+            }
 
             financeForm.reset();
             inputDataGasto.value = new Date().toISOString().split('T')[0];
             document.getElementById('parcelasDiv').classList.remove('visible');
             
-            if (filtroMes.value !== mesReal) {
-                filtroMes.value = mesReal;
-                carregarDashboard(mesReal);
+            // Força a atualização do dashboard para a data atual da tela
+            carregarDashboard(filtroMes.value);
+            
+            if(parcelasSalvas > 1) {
+                alert(`${parcelasSalvas} parcelas foram agendadas com sucesso nas próximas faturas!`);
             }
+
         } catch (erro) {
             alert("Erro ao salvar. Verifique se as regras do Firebase foram atualizadas.");
         } finally {
