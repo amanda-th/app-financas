@@ -5,44 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Finanças - Cartão</title>
     
-    <!-- Biblioteca de Gráficos -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    
-    <!-- Biblioteca de Ícones (Phosphor Icons) -->
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
-    
-    <!-- Fontes Google -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600&display=swap" rel="stylesheet">
     
     <style>
-        /* 1. Tema Ice Cream (Padrão/Principal) */
         :root {
             --bg-color: #feeac7; --surface-color: #fdf5e6; 
             --primary-color: #d88180; --text-color: #724319; --border-color: #f7b1b0; 
         }
-        /* 2. Tema Peachy Glow */
         :root.theme-peachy-glow {
             --bg-color: #472d30ff; --surface-color: #723d46ff; 
             --primary-color: #e26d5cff; --text-color: #ffe1a8ff; --border-color: #c9cba3ff; 
         }
-        /* 3. Tema Summer Dream */
         :root.theme-summer-dream {
             --bg-color: #fdfcdcff; --surface-color: #fed9b7ff; 
             --primary-color: #f07167ff; --text-color: #0081a7ff; --border-color: #00afb9ff; 
         }
-        /* 4. Tema Ocean Pearl */
         :root.theme-ocean-pearl {
             --bg-color: #edf6f9ff; --surface-color: #ffddd2ff; 
             --primary-color: #e29578ff; --text-color: #006d77ff; --border-color: #83c5beff; 
         }
-        /* 5. Tema Fresh Greens */
         :root.theme-fresh-greens {
             --bg-color: #2d4a22; --surface-color: #386641; 
             --primary-color: #a7c957; --text-color: #f2e8cf; --border-color: #6a994e;
         }      
-        /* 6. Tema Cozy Earth */
         :root.theme-cozy-earth {
             --bg-color: #d2d0baff; --surface-color: #e5c1bdff; 
             --primary-color: #7b9e87ff; --text-color: #5e747fff; --border-color: #b6be9cff; 
@@ -183,6 +172,17 @@
         .modal-content p { font-size: 0.9em; opacity: 0.8; margin-top: -10px; margin-bottom: 20px;}
         .shortcut-group { display: flex; gap: 8px; margin-bottom: 10px; }
 
+        #btnResetMonth {
+            background-color: transparent; color: #cf6679; border: 1px solid #cf6679; 
+            padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; 
+            font-family: 'Fredoka', sans-serif; font-weight: 600; display: flex; 
+            justify-content: center; align-items: center; gap: 8px; transition: all 0.2s;
+            margin-bottom: 20px;
+        }
+        #btnResetMonth:hover {
+            background-color: #cf6679; color: var(--bg-color);
+        }
+
         @media (max-width: 480px) {
             body { padding: 10px; }
             .container { padding: 16px; }
@@ -196,7 +196,6 @@
 </head>
 <body>
 
-<!-- MODAL DE CONFIGURAÇÕES -->
 <div id="configModal" class="modal-overlay">
     <div class="modal-content">
         <h3 id="modalTitle">Configurações</h3>
@@ -262,7 +261,16 @@
                 </select>
             </div>
 
-            <button type="submit" style="margin-bottom: 10px;">Salvar Preferências</button>
+            <button type="submit" style="margin-bottom: 20px;">Salvar Preferências</button>
+
+            <!-- ZONA DE PERIGO -->
+            <hr style="border: 1px solid var(--border-color); margin: 0 0 20px 0;">
+            <h4 style="margin-top:0; margin-bottom:10px; color: #cf6679;">Zona de Perigo</h4>
+            
+            <button type="button" id="btnResetMonth">
+                <i class="ph ph-warning-circle" style="font-size: 1.2em;"></i> Apagar gastos de <span id="spanMesReset" style="margin-left:4px;">...</span>
+            </button>
+
             <button type="button" id="btnCloseModal" class="btn-quick" style="width: 100%; border: none; text-align: center; justify-content: center;">Cancelar / Fechar</button>
         </form>
     </div>
@@ -475,6 +483,10 @@
                 document.getElementById(`shortcut${i}Cat`).value = userConfig.atalhos[i].cat;
             }
         }
+        
+        // Atualiza a visualização do mês na zona de perigo
+        document.getElementById('spanMesReset').innerText = filtroMes.value || "este mês";
+
         configModal.classList.add('active');
     }
 
@@ -500,6 +512,28 @@
 
         await set(ref(db, `financas/${globalUid}/config`), novaConfig);
         configModal.classList.remove('active');
+    });
+
+    // Função de Reset do Mês Selecionado
+    document.getElementById('btnResetMonth').addEventListener('click', async () => {
+        const mesAtual = filtroMes.value;
+        if (!mesAtual) return;
+        
+        const confirmacao = confirm(`⚠️ ATENÇÃO: Tem certeza ABSOLUTA que deseja apagar TODOS os gastos do mês ${mesAtual}? Isso não pode ser desfeito.`);
+        
+        if (confirmacao) {
+            const btnReset = document.getElementById('btnResetMonth');
+            btnReset.innerText = "Apagando...";
+            try {
+                await remove(ref(db, `financas/${globalUid}/faturas/${mesAtual}`));
+                alert(`Todos os gastos de ${mesAtual} foram apagados com sucesso!`);
+                configModal.classList.remove('active');
+            } catch (e) {
+                alert("Erro ao apagar os dados. Verifique a conexão.");
+            } finally {
+                btnReset.innerHTML = `<i class="ph ph-warning-circle" style="font-size: 1.2em;"></i> Apagar gastos de <span id="spanMesReset" style="margin-left:4px;">${mesAtual}</span>`;
+            }
+        }
     });
 
     document.getElementById('btnSettings').addEventListener('click', () => abrirModalConfig(false));
@@ -574,7 +608,6 @@
         const porcentagemTotal = ((totalGasto / userConfig.limite) * 100).toFixed(0);
         let dica = `Consumo: <span class="destaque">${porcentagemTotal}%</span> da meta de R$ ${userConfig.limite.toFixed(2)}. `;
 
-        // Usamos a mesma lógica de faturas para o mes atual
         const dataHojeIso = new Date().toISOString();
         const mesAtualReal = obterMesFaturaParaData(dataHojeIso);
         
@@ -839,10 +872,7 @@
         let totalIteracoes = isParcelado ? (pTotal - pAtual + 1) : 1;
 
         try {
-            // Loop para salvar automaticamente todas as parcelas restantes para o futuro
             for (let i = 0; i < totalIteracoes; i++) {
-                
-                // Pega a data base e adiciona meses equivalentes à parcela
                 let dataInst = new Date(dataSelecionada + 'T12:00:00');
                 dataInst.setMonth(dataInst.getMonth() + i);
                 
@@ -851,7 +881,6 @@
                 let diaInst = String(dataInst.getDate()).padStart(2, '0');
                 let dataFinalString = `${anoInst}-${mesInst}-${diaInst}T${horaLocal}`;
                 
-                // Descobre em qual fatura essa data futura vai cair
                 let faturaMesStr = obterMesFaturaParaData(dataFinalString);
 
                 const novoGasto = {
@@ -872,7 +901,6 @@
             inputDataGasto.value = new Date().toISOString().split('T')[0];
             document.getElementById('parcelasDiv').classList.remove('visible');
             
-            // Força a atualização do dashboard para a data atual da tela
             carregarDashboard(filtroMes.value);
             
             if(parcelasSalvas > 1) {
